@@ -6,7 +6,6 @@ namespace Beyond.Todo.Infrastructure;
 public class TodoListRepository : ITodoListRepository
 {
     private readonly TodoDbContext _context;
-    private int _currentId = 0;
     private readonly List<string> _categories = new() { "Work", "Personal", "Urgent" };
 
     public TodoListRepository(TodoDbContext context)
@@ -14,7 +13,7 @@ public class TodoListRepository : ITodoListRepository
         _context = context;
     }
 
-    public int GetNextId() => ++_currentId;
+    public int GetNextId() => _context.TodoItems.Any() ? _context.TodoItems.Max(x => x.Id) + 1 : 1;
 
     public Task<List<string>> GetAllCategoriesAsync() => Task.FromResult(_categories);
 

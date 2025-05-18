@@ -43,7 +43,7 @@ internal class Program
                         System.Console.Write("Enter category: ");
                         var category = System.Console.ReadLine() ?? "";
                         todoList.PrintItems(); // Print before action
-                        todoList.AddItem(0, title, description, category);
+                        todoList.AddItem(title, description, category);
                         break;
 
                     case "2":
