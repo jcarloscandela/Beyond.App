@@ -12,7 +12,7 @@ public class TodoList : ITodoList
         _mediator = mediator;
     }
 
-    public async void AddItem(int id, string title, string description, string category)
+    public async void AddItem(string title, string description, string category)
     {
         await _mediator.Send(new AddTodoItemCommand(title, description, category));
     }
