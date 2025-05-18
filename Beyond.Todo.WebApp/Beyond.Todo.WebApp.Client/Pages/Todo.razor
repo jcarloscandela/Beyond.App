@@ -21,10 +21,16 @@
                     <FluentStack Style="padding: 16px;">
                         <h3>@item.Title</h3>
                         <p>@item.Description</p>
-                        <FluentProgressBar Value="@(item.Progressions.LastOrDefault()?.CumulativePercent ?? 0)" Max="100" />
-                        <FluentLabel>
-                            @($"{(item.Progressions.LastOrDefault()?.CumulativePercent ?? 0):N0}%")
-                        </FluentLabel>
+                        @{
+                            var progress = item.Progressions.LastOrDefault()?.CumulativePercent ?? 0;
+                            var progressValue = Convert.ToInt32(progress);
+                        }
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <FluentProgressRing Min="0" Max="100" Value="@progressValue" />
+                            <FluentLabel>
+                                @($"{progressValue}%")
+                            </FluentLabel>
+                        </div>
                     </FluentStack>
                 </FluentCard>
             }
