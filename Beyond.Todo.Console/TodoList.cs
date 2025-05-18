@@ -26,8 +26,17 @@ public class TodoList : ITodoList
         }
     }
 
-    public async void AddItem(string title, string description, string category)
+    public async void AddItem(string title, string description, string categoryName)
     {
+        var categories = await GetCategories();
+        var category = categories.FirstOrDefault(c => c.Equals(categoryName, StringComparison.OrdinalIgnoreCase));
+
+        if (category == null)
+        {
+            AnsiConsole.MarkupLine($"[red]Error: Category '{categoryName}' not found[/]");
+            return;
+        }
+
         await ExecuteWithErrorHandling(
             () => _mediator.Send(new AddTodoItemCommand(title, description, category)),
             "adding item");
@@ -56,6 +65,7 @@ public class TodoList : ITodoList
 
     public async void PrintItems()
     {
+        System.Console.Clear();
         var items = await ExecuteWithErrorHandling(
             () => _mediator.Send(new PrintItemsQuery()),
             "printing items");
@@ -101,8 +111,15 @@ public class TodoList : ITodoList
 
     public async Task<List<string>> GetCategories()
     {
-        return await ExecuteWithErrorHandling(
+        var categories = await ExecuteWithErrorHandling(
             () => _mediator.Send(new GetCategoriesQuery()),
-            "getting categories") ?? new List<string>();
+            "getting categories");
+
+        if (categories != null)
+        {
+            return categories.Select(c => c.Name).ToList();
+        }
+        
+        return new List<string>();
     }
 }

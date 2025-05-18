@@ -1,20 +1,21 @@
 using MediatR;
+using Beyond.Todo.Domain.Entities;
 using Beyond.Todo.Infrastructure;
 
 namespace Beyond.Todo.Application;
 
-public record GetCategoriesQuery : IRequest<List<string>>;
+public record GetCategoriesQuery : IRequest<List<Category>>;
 
-public class GetCategoriesQueryHandler : IRequestHandler<GetCategoriesQuery, List<string>>
+public class GetCategoriesQueryHandler : IRequestHandler<GetCategoriesQuery, List<Category>>
 {
-    private readonly ITodoListRepository _repository;
+    private readonly ICategoryRepository _repository;
 
-    public GetCategoriesQueryHandler(ITodoListRepository repository)
+    public GetCategoriesQueryHandler(ICategoryRepository repository)
     {
         _repository = repository;
     }
 
-    public Task<List<string>> Handle(GetCategoriesQuery request, CancellationToken cancellationToken)
+    public Task<List<Category>> Handle(GetCategoriesQuery request, CancellationToken cancellationToken)
     {
         return _repository.GetAllCategoriesAsync();
     }

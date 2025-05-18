@@ -22,7 +22,7 @@ public sealed class PrintItemsHandler : IRequestHandler<PrintItemsQuery, List<To
             Id = item.Id,
             Title = item.Title,
             Description = item.Description,
-            Category = item.Category,
+            Category = item.Category.Name,
             IsCompleted = item.IsCompleted,
             Progressions = item.Progressions
                 .OrderBy(p => p.Date)

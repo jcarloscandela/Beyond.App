@@ -16,6 +16,13 @@ namespace Beyond.App.Controllers
             _mediator = mediator;
         }
 
+        [HttpGet("categories")]
+        public async Task<IActionResult> GetCategories()
+        {
+            var categories = await _mediator.Send(new GetCategoriesQuery());
+            return Ok(categories);
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetItems()
         {

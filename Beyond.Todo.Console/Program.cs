@@ -51,23 +51,23 @@ internal class Program
                         break;
 
                     case "2":
-                        todoList.PrintItems(); // Print current items
                         var updateId = AnsiConsole.Ask<int>("Enter [green]item ID[/] to update:");
                         var newDescription = AnsiConsole.Ask<string>("Enter [green]new description[/]:");
                         todoList.UpdateItem(updateId, newDescription);
+                        todoList.PrintItems();
                         break;
 
                     case "3":
-                        todoList.PrintItems(); // Print current items
                         var removeId = AnsiConsole.Ask<int>("Enter [green]item ID[/] to remove:");
                         todoList.RemoveItem(removeId);
+                        todoList.PrintItems();
                         break;
 
                     case "4":
-                        todoList.PrintItems(); // Print current items
                         var progressId = AnsiConsole.Ask<int>("Enter [green]item ID[/]:");
                         var percent = AnsiConsole.Ask<decimal>("Enter [green]progress percentage[/] (0-100):");
                         todoList.RegisterProgression(progressId, DateTime.Now, percent);
+                        todoList.PrintItems();
                         break;
 
                     case "5":

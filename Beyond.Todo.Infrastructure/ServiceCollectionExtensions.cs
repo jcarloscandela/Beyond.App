@@ -11,6 +11,7 @@ public static class ServiceCollectionExtensions
                 options.UseInMemoryDatabase("TodoDb"));
 
         services.AddScoped<ITodoListRepository, TodoListRepository>();
+        services.AddScoped<ICategoryRepository, CategoryRepository>();
 
         var sp = services.BuildServiceProvider();
         using var scope = sp.CreateScope();

@@ -7,17 +7,18 @@ public class TodoItem
     public int Id { get; private set; }
     public string Title { get; private set; }
     public string Description { get; private set; }
-    public string Category { get; private set; }
+    public int CategoryId { get; private set; }
+    public Category Category { get; private set; }
     public IReadOnlyCollection<Progression> Progressions => _progressions.AsReadOnly();
     public bool IsCompleted => _progressions.Sum(p => p.Percent) >= 100;
     public decimal TotalProgress => _progressions.Sum(p => p.Percent);
 
-    public TodoItem(int id, string title, string description, string category)
+    public TodoItem(int id, string title, string description, int categoryId)
     {
         Id = id;
         Title = title;
         Description = description;
-        Category = category;
+        CategoryId = categoryId;
     }
 
     public void UpdateDescription(string description)

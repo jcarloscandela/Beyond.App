@@ -21,7 +21,7 @@ public class RegisterProgressionHandlerTests
         // Arrange
         var command = new RegisterProgressionCommand(1, new DateTime(2025, 5, 18), 60);
 
-        var item = new TodoItem(1, "title", "desc", "category");
+        var item = new TodoItem(1, "title", "desc", 1);
         var repo = Substitute.For<ITodoListRepository>();
         repo.GetByIdAsync(command.Id).Returns(item);
 

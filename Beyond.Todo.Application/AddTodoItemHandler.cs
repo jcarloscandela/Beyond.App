@@ -6,23 +6,25 @@ namespace Beyond.Todo.Application;
 
 public sealed class AddTodoItemHandler : IRequestHandler<AddTodoItemCommand, int>
 {
-    private readonly ITodoListRepository _repo;
+    private readonly ITodoListRepository _todoRepo;
+    private readonly ICategoryRepository _categoryRepo;
 
-    public AddTodoItemHandler(ITodoListRepository repo)
+    public AddTodoItemHandler(ITodoListRepository todoRepo, ICategoryRepository categoryRepo)
     {
-        _repo = repo;
+        _todoRepo = todoRepo;
+        _categoryRepo = categoryRepo;
     }
 
     public async Task<int> Handle(AddTodoItemCommand request, CancellationToken cancellationToken)
     {
-        var categories = await _repo.GetAllCategoriesAsync();
-        if (!categories.Contains(request.Category))
-            throw new ArgumentException("Invalid category.");
+        var category = await _categoryRepo.GetCategoryByNameAsync(request.Category);
+        if (category == null)
+            throw new ArgumentException($"Category '{request.Category}' not found.");
 
-        int id = _repo.GetNextId();
-        var item = new TodoItem(id, request.Title, request.Description, request.Category);
-        await _repo.AddAsync(item);
-        await _repo.SaveChangesAsync();
+        int id = _todoRepo.GetNextId();
+        var item = new TodoItem(id, request.Title, request.Description, category.Id);
+        await _todoRepo.AddAsync(item);
+        await _todoRepo.SaveChangesAsync();
         return id;
     }
 }

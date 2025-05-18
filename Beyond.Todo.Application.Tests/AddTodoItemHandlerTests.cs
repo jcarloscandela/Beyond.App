@@ -6,12 +6,13 @@ namespace Beyond.Todo.Application.Tests;
 
 public class AddTodoItemHandlerTests
 {
-    private readonly ITodoListRepository _repo = Substitute.For<ITodoListRepository>();
+    private readonly ITodoListRepository _todoRepo = Substitute.For<ITodoListRepository>();
+    private readonly ICategoryRepository _categoryRepo = Substitute.For<ICategoryRepository>();
     private readonly AddTodoItemHandler _handler;
 
     public AddTodoItemHandlerTests()
     {
-        _handler = new AddTodoItemHandler(_repo);
+        _handler = new AddTodoItemHandler(_todoRepo, _categoryRepo);
     }
 
     [Fact]
@@ -19,24 +20,24 @@ public class AddTodoItemHandlerTests
     {
         // Arrange
         var command = new AddTodoItemCommand("Test Title", "Test Description", "Work");
-        var expectedCategories = new List<string> { "Work", "Personal" };
+        var category = new Category(1, "Work");
         var expectedId = 42;
 
-        _repo.GetAllCategoriesAsync().Returns(expectedCategories);
-        _repo.GetNextId().Returns(expectedId);
+        _categoryRepo.GetCategoryByNameAsync("Work").Returns(category);
+        _todoRepo.GetNextId().Returns(expectedId);
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
         Assert.Equal(expectedId, result);
-        await _repo.Received(1).AddAsync(Arg.Is<TodoItem>(item =>
+        await _todoRepo.Received(1).AddAsync(Arg.Is<TodoItem>(item =>
             item.Id == expectedId &&
             item.Title == "Test Title" &&
             item.Description == "Test Description" &&
-            item.Category == "Work"
+            item.CategoryId == category.Id
         ));
-        await _repo.Received(1).SaveChangesAsync();
+        await _todoRepo.Received(1).SaveChangesAsync();
     }
 
     [Fact]
@@ -44,13 +45,13 @@ public class AddTodoItemHandlerTests
     {
         // Arrange  
         var command = new AddTodoItemCommand("Title", "Desc", "InvalidCategory");
-        _repo.GetAllCategoriesAsync().Returns(["Work", "Personal"]);
+        _categoryRepo.GetCategoryByNameAsync("InvalidCategory").Returns((Category?)null);
 
         // Act & Assert  
         var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _handler.Handle(command, CancellationToken.None));
-        Assert.Equal("Invalid category.", ex.Message);
+        Assert.Equal("Category 'InvalidCategory' not found.", ex.Message);
 
-        await _repo.DidNotReceive().AddAsync(Arg.Any<TodoItem>());
-        await _repo.DidNotReceive().SaveChangesAsync();
+        await _todoRepo.DidNotReceive().AddAsync(Arg.Any<TodoItem>());
+        await _todoRepo.DidNotReceive().SaveChangesAsync();
     }
 }
