@@ -12,6 +12,11 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<ITodoListRepository, TodoListRepository>();
 
+        var sp = services.BuildServiceProvider();
+        using var scope = sp.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<TodoDbContext>();
+        context.SeedDataAsync().GetAwaiter().GetResult();
+
         return services;
     }
 }

@@ -16,6 +16,13 @@ namespace Beyond.App.Controllers
             _mediator = mediator;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetItems()
+        {
+            var items = await _mediator.Send(new PrintItemsQuery());
+            return Ok(items);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] AddTodoItemCommand command)
         {
