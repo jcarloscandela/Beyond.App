@@ -1,7 +1,7 @@
 ﻿using Beyond.Todo.Infrastructure.Interfaces;
 using MediatR;
 
-namespace Beyond.Todo.Application;
+namespace Beyond.Todo.Application.Commands;
 
 public sealed class RegisterProgressionHandler : IRequestHandler<RegisterProgressionCommand, Unit>
 {

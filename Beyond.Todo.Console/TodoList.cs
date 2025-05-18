@@ -1,4 +1,6 @@
 using Beyond.Todo.Application;
+using Beyond.Todo.Application.Commands;
+using Beyond.Todo.Application.Queries;
 using MediatR;
 using Spectre.Console;
 

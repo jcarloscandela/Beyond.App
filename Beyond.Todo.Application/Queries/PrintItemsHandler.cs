@@ -2,7 +2,7 @@
 using Beyond.Todo.Infrastructure.Interfaces;
 using MediatR;
 
-namespace Beyond.Todo.Application;
+namespace Beyond.Todo.Application.Queries;
 
 public sealed class PrintItemsHandler : IRequestHandler<PrintItemsQuery, List<TodoItemDto>>
 {
