@@ -42,8 +42,11 @@ public class TodoDbContext : DbContext
         if (await Categories.AnyAsync())
             return;
 
-        var programmingCategory = new Category(1, "Programming");
-        await Categories.AddAsync(programmingCategory);
+        var category1 = new Category(1, "Programming");
+        var category2 = new Category(2, "Work");
+        var category3 = new Category(3, "Misc");
+
+        await Categories.AddRangeAsync(category1, category2, category3);
         await SaveChangesAsync();
 
         var item1 = new TodoItem(1, "Learn C#", "Master C# programming language", 1);

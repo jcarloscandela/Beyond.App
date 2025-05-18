@@ -1,5 +1,6 @@
 using Beyond.Todo.API.Models;
 using Beyond.Todo.Application;
+using Beyond.Todo.Application.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
