@@ -1,7 +1,8 @@
 using Beyond.Todo.Domain.Entities;
+using Beyond.Todo.Infrastructure.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace Beyond.Todo.Infrastructure;
+namespace Beyond.Todo.Infrastructure.Implementations;
 
 public class CategoryRepository : ICategoryRepository
 {

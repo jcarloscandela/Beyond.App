@@ -1,5 +1,5 @@
 ﻿using Beyond.Todo.Application.Models;
-using Beyond.Todo.Infrastructure;
+using Beyond.Todo.Infrastructure.Interfaces;
 using MediatR;
 
 namespace Beyond.Todo.Application;

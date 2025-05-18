@@ -1,6 +1,6 @@
 using MediatR;
 using Beyond.Todo.Domain.Entities;
-using Beyond.Todo.Infrastructure;
+using Beyond.Todo.Infrastructure.Interfaces;
 
 namespace Beyond.Todo.Application;
 

@@ -1,6 +1,6 @@
 using Beyond.Todo.Domain.Entities;
 
-namespace Beyond.Todo.Infrastructure;
+namespace Beyond.Todo.Infrastructure.Interfaces;
 
 public interface ICategoryRepository
 {

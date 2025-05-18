@@ -1,5 +1,5 @@
 ﻿using Beyond.Todo.Domain.Entities;
-using Beyond.Todo.Infrastructure;
+using Beyond.Todo.Infrastructure.Interfaces;
 using MediatR;
 using NSubstitute;
 
