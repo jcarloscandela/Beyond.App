@@ -14,4 +14,8 @@
     <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components.Icons" Version="4.11.9" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Beyond.Todo.Application\Beyond.Todo.Application.csproj" />
+  </ItemGroup>
+
 </Project>

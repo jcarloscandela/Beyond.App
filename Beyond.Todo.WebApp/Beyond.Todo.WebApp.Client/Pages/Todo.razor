@@ -1,0 +1,55 @@
+@page "/todo"
+@using Beyond.Todo.Application.Models
+@using Microsoft.FluentUI.AspNetCore.Components
+@inject HttpClient Http
+
+<PageTitle>Todo List</PageTitle>
+
+<div class="container">
+    <h1>Todo List</h1>
+
+    @if (todos == null)
+    {
+        <FluentProgressRing />
+    }
+    else
+    {
+        <div class="todo-grid">
+            @foreach (var item in todos)
+            {
+                <FluentCard>
+                    <FluentStack Style="padding: 16px;">
+                        <h3>@item.Title</h3>
+                        <p>@item.Description</p>
+                        <FluentProgressBar Value="@(item.Progressions.LastOrDefault()?.CumulativePercent ?? 0)" Max="100" />
+                        <FluentLabel>
+                            @($"{(item.Progressions.LastOrDefault()?.CumulativePercent ?? 0):N0}%")
+                        </FluentLabel>
+                    </FluentStack>
+                </FluentCard>
+            }
+        </div>
+    }
+</div>
+
+<style>
+    .container {
+        padding: 20px;
+    }
+
+    .todo-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+        padding: 20px 0;
+    }
+</style>
+
+@code {
+    private List<TodoItemDto>? todos;
+
+    protected override async Task OnInitializedAsync()
+    {
+        todos = await Http.GetFromJsonAsync<List<TodoItemDto>>("api/todo") ?? new List<TodoItemDto>();
+    }
+}

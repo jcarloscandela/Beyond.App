@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Beyond.Todo.Application\Beyond.Todo.Application.csproj" />
     <ProjectReference Include="..\Beyond.Todo.WebApp.Client\Beyond.Todo.WebApp.Client.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.3" />
   </ItemGroup>
