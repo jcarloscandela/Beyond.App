@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Beyond.Todo.Infrastructure"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Beyond.Todo.Application.Tests", "Beyond.Todo.Application.Tests\Beyond.Todo.Application.Tests.csproj", "{5629ADA3-D08D-4FCA-9ED1-3216278407B7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Beyond.Todo.Console", "Beyond.Todo.Console\Beyond.Todo.Console.csproj", "{2FFA6A7B-C255-4BAA-9BA6-6E8A34C2925F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{5629ADA3-D08D-4FCA-9ED1-3216278407B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5629ADA3-D08D-4FCA-9ED1-3216278407B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5629ADA3-D08D-4FCA-9ED1-3216278407B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2FFA6A7B-C255-4BAA-9BA6-6E8A34C2925F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2FFA6A7B-C255-4BAA-9BA6-6E8A34C2925F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2FFA6A7B-C255-4BAA-9BA6-6E8A34C2925F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2FFA6A7B-C255-4BAA-9BA6-6E8A34C2925F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

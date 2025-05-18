@@ -15,7 +15,6 @@ public class TodoDbContext : DbContext
         modelBuilder.Entity<Progression>(builder =>
         {
             builder.HasKey(p => p.Id);
-
             builder.HasOne(p => p.TodoItem)
                    .WithMany(t => t.Progressions)
                    .HasForeignKey(p => p.TodoItemId)
