@@ -1,5 +1,6 @@
 using Beyond.Todo.Application;
 using MediatR;
+using Spectre.Console;
 
 namespace Beyond.Todo.Console;
 
@@ -35,18 +36,44 @@ public class TodoList : ITodoList
     public async void PrintItems()
     {
         var items = await _mediator.Send(new PrintItemsQuery());
+        var table = new Table();
+
+        table.AddColumn("Id");
+        table.AddColumn("Title");
+        table.AddColumn("Description");
+        table.AddColumn("Category");
+        table.AddColumn("Progress");
+        table.AddColumn("Last Update");
+
         foreach (var item in items)
         {
-            System.Console.WriteLine($"Id: {item.Id}");
-            System.Console.WriteLine($"Title: {item.Title}");
-            System.Console.WriteLine($"Description: {item.Description}");
-            System.Console.WriteLine($"Category: {item.Category}");
-            System.Console.WriteLine("Progressions:");
-            foreach (var progression in item.Progressions)
+            var lastProgression = item.Progressions.MaxBy(p => p.Date);
+            var progress = lastProgression?.CumulativePercent ?? 0;
+            var progressColor = progress >= 100 ? "green" : "yellow";
+
+            var progressBar = $"{new string('#', (int)(progress / 10))}{new string('-', 10 - (int)(progress / 10))}";
+            var progressText = progress >= 100
+                ? "[green]Complete[/]"
+                : $"[{progressColor}]{progressBar} {progress}%[/]";
+
+            var row = new string[]
             {
-                System.Console.WriteLine($"  Date: {progression.Date}, Progress: {progression.CumulativePercent}%");
-            }
-            System.Console.WriteLine("-------------------");
+                item.Id.ToString(),
+                item.Title,
+                item.Description,
+                $"[blue]{item.Category}[/]",
+                progressText,
+                lastProgression?.Date.ToString("yyyy-MM-dd HH:mm") ?? "No progress"
+            };
+
+            table.AddRow(row);
         }
+
+        AnsiConsole.Write(table);
+    }
+
+    public async Task<List<string>> GetCategories()
+    {
+        return await _mediator.Send(new GetCategoriesQuery());
     }
 }

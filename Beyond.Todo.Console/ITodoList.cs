@@ -7,4 +7,5 @@ public interface ITodoList
     void RemoveItem(int id);
     void RegisterProgression(int id, DateTime dateTime, decimal percent);
     void PrintItems();
+    Task<List<string>> GetCategories();
 }

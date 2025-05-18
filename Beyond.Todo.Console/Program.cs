@@ -1,6 +1,7 @@
 ﻿using Beyond.Todo.Application;
 using Beyond.Todo.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
+using Spectre.Console;
 
 namespace Beyond.Todo.Console;
 
@@ -20,63 +21,53 @@ internal class Program
 
         while (true)
         {
-            System.Console.WriteLine("\nTodo List Application");
-            System.Console.WriteLine("1. Add Item");
-            System.Console.WriteLine("2. Update Item");
-            System.Console.WriteLine("3. Remove Item");
-            System.Console.WriteLine("4. Register Progression");
-            System.Console.WriteLine("5. Print Items");
-            System.Console.WriteLine("6. Exit");
-            System.Console.Write("Choose an option: ");
-
-            var choice = System.Console.ReadLine();
+            AnsiConsole.Write(new Rule("[blue]Todo List Application[/]").RuleStyle("grey"));
+            var choice = AnsiConsole.Prompt(
+                new SelectionPrompt<string>()
+                    .Title("Choose an option:")
+                    .AddChoices(new[] {
+                        "1. Add Item",
+                        "2. Update Item",
+                        "3. Remove Item",
+                        "4. Register Progression",
+                        "5. Print Items",
+                        "6. Exit"
+                    }));
 
             try
             {
-                switch (choice)
+                switch (choice[0].ToString())
                 {
                     case "1":
-                        System.Console.Write("Enter title: ");
-                        var title = System.Console.ReadLine() ?? "";
-                        System.Console.Write("Enter description: ");
-                        var description = System.Console.ReadLine() ?? "";
-                        System.Console.Write("Enter category: ");
-                        var category = System.Console.ReadLine() ?? "";
-                        todoList.PrintItems(); // Print before action
+                        var title = AnsiConsole.Ask<string>("Enter [green]title[/]:");
+                        var description = AnsiConsole.Ask<string>("Enter [green]description[/]:");
+                        var categories = await todoList.GetCategories();
+                        var category = AnsiConsole.Prompt(
+                            new SelectionPrompt<string>()
+                                .Title("Select [green]category[/]:")
+                                .AddChoices(categories));
                         todoList.AddItem(title, description, category);
+                        todoList.PrintItems();
                         break;
 
                     case "2":
                         todoList.PrintItems(); // Print current items
-                        System.Console.Write("Enter item ID to update: ");
-                        if (int.TryParse(System.Console.ReadLine(), out int updateId))
-                        {
-                            System.Console.Write("Enter new description: ");
-                            var newDescription = System.Console.ReadLine() ?? "";
-                            todoList.UpdateItem(updateId, newDescription);
-                        }
+                        var updateId = AnsiConsole.Ask<int>("Enter [green]item ID[/] to update:");
+                        var newDescription = AnsiConsole.Ask<string>("Enter [green]new description[/]:");
+                        todoList.UpdateItem(updateId, newDescription);
                         break;
 
                     case "3":
                         todoList.PrintItems(); // Print current items
-                        System.Console.Write("Enter item ID to remove: ");
-                        if (int.TryParse(System.Console.ReadLine(), out int removeId))
-                        {
-                            todoList.RemoveItem(removeId);
-                        }
+                        var removeId = AnsiConsole.Ask<int>("Enter [green]item ID[/] to remove:");
+                        todoList.RemoveItem(removeId);
                         break;
 
                     case "4":
                         todoList.PrintItems(); // Print current items
-                        System.Console.Write("Enter item ID: ");
-                        if (int.TryParse(System.Console.ReadLine(), out int progressId))
-                        {
-                            System.Console.Write("Enter progress percentage (0-100): ");
-                            if (decimal.TryParse(System.Console.ReadLine(), out decimal percent))
-                            {
-                                todoList.RegisterProgression(progressId, DateTime.Now, percent);
-                            }
-                        }
+                        var progressId = AnsiConsole.Ask<int>("Enter [green]item ID[/]:");
+                        var percent = AnsiConsole.Ask<decimal>("Enter [green]progress percentage[/] (0-100):");
+                        todoList.RegisterProgression(progressId, DateTime.Now, percent);
                         break;
 
                     case "5":
@@ -87,13 +78,13 @@ internal class Program
                         return;
 
                     default:
-                        System.Console.WriteLine("Invalid option. Please try again.");
+                        AnsiConsole.MarkupLine("[red]Invalid option. Please try again.[/]");
                         break;
                 }
             }
             catch (Exception ex)
             {
-                System.Console.WriteLine($"Error: {ex.Message}");
+                AnsiConsole.MarkupLine($"[red]Error:[/] {ex.Message}");
             }
         }
     }
