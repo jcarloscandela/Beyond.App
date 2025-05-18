@@ -1,3 +1,4 @@
+using Scalar.AspNetCore;
 
 namespace Beyond.App
 {
@@ -19,6 +20,7 @@ namespace Beyond.App
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
+                app.MapScalarApiReference();
             }
 
             app.UseHttpsRedirection();

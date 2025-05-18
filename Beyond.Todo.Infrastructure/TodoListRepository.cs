@@ -18,6 +18,16 @@ public class TodoListRepository : ITodoListRepository
 
     public Task<List<string>> GetAllCategoriesAsync() => Task.FromResult(_categories);
 
+    public async Task<List<TodoItem>> GetAllItemsAsync(int skip = 0, int take = 10)
+    {
+        return await _context.TodoItems
+            .Include(x => x.Progressions)
+            .OrderBy(x => x.Id)
+            .Skip(skip)
+            .Take(take)
+            .ToListAsync();
+    }
+
     public async Task<TodoItem?> GetByIdAsync(int id) =>
         await _context.TodoItems.Include(x => x.Progressions).FirstOrDefaultAsync(x => x.Id == id);
 
@@ -26,7 +36,7 @@ public class TodoListRepository : ITodoListRepository
         await _context.TodoItems.AddAsync(item);
     }
 
-    public async Task RemoveAsync(TodoItem item)
+    public void Remove(TodoItem item)
     {
         _context.TodoItems.Remove(item);
     }

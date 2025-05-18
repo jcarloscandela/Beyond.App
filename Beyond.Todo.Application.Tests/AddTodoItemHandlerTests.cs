@@ -50,7 +50,7 @@ public class AddTodoItemHandlerTests
         var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _handler.Handle(command, CancellationToken.None));
         Assert.Equal("Invalid category.", ex.Message);
 
-        _repo.DidNotReceive().AddAsync(Arg.Any<TodoItem>());
-        _repo.DidNotReceive().SaveChangesAsync();
+        await _repo.DidNotReceive().AddAsync(Arg.Any<TodoItem>());
+        await _repo.DidNotReceive().SaveChangesAsync();
     }
 }

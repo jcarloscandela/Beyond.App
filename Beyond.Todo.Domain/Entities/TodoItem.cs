@@ -10,6 +10,7 @@ public class TodoItem
     public string Category { get; private set; }
     public IReadOnlyList<Progression> Progressions => _progressions.AsReadOnly();
     public bool IsCompleted => _progressions.Sum(p => p.Percent) >= 100;
+    public decimal TotalProgress => _progressions.Sum(p => p.Percent);
 
     private TodoItem() { } // EF Core
 

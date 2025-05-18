@@ -9,6 +9,7 @@ public interface ITodoListRepository
     Task<TodoItem?> GetByIdAsync(int id);
     Task AddAsync(TodoItem item);
     Task SaveChangesAsync();
-    Task RemoveAsync(TodoItem item);
+    void Remove(TodoItem item);
+    Task<List<TodoItem>> GetAllItemsAsync(int skip = 0, int take = 10);
 }
 

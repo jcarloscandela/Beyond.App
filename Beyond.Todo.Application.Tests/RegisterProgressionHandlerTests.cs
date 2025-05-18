@@ -46,6 +46,6 @@ public class RegisterProgressionHandlerTests
         // Act & Assert
         await Assert.ThrowsAsync<KeyNotFoundException>(async () => await _handler.Handle(command, CancellationToken.None));
 
-        _repo.DidNotReceive().SaveChangesAsync();
+        await _repo.DidNotReceive().SaveChangesAsync();
     }
 }
