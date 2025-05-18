@@ -8,11 +8,9 @@ public class TodoItem
     public string Title { get; private set; }
     public string Description { get; private set; }
     public string Category { get; private set; }
-    public IReadOnlyList<Progression> Progressions => _progressions.AsReadOnly();
+    public IReadOnlyCollection<Progression> Progressions => _progressions.AsReadOnly();
     public bool IsCompleted => _progressions.Sum(p => p.Percent) >= 100;
     public decimal TotalProgress => _progressions.Sum(p => p.Percent);
-
-    private TodoItem() { } // EF Core
 
     public TodoItem(int id, string title, string description, string category)
     {
@@ -31,15 +29,12 @@ public class TodoItem
 
     public void AddProgression(DateTime date, decimal percent)
     {
-        if (percent <= 0 || percent >= 100)
-            throw new ArgumentException("Percent must be > 0 and < 100");
-
         if (_progressions.Count > 0 && date <= _progressions.Max(p => p.Date))
             throw new ArgumentException("Progression date must be after the last one");
 
         if (_progressions.Sum(p => p.Percent) + percent > 100)
             throw new InvalidOperationException("Total progress cannot exceed 100%");
 
-        _progressions.Add(new Progression(date, percent));
+        _progressions.Add(new Progression(Id, date, percent));
     }
 }

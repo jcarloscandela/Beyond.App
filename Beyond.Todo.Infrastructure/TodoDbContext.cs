@@ -6,12 +6,21 @@ namespace Beyond.Todo.Infrastructure;
 public class TodoDbContext : DbContext
 {
     public DbSet<TodoItem> TodoItems => Set<TodoItem>();
+    public DbSet<Progression> Progressions => Set<Progression>();
 
     public TodoDbContext(DbContextOptions<TodoDbContext> options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<TodoItem>().OwnsMany(x => x.Progressions);
+        modelBuilder.Entity<Progression>(builder =>
+        {
+            builder.HasKey(p => p.Id);
+
+            builder.HasOne(p => p.TodoItem)
+                   .WithMany(t => t.Progressions)
+                   .HasForeignKey(p => p.TodoItemId)
+                   .OnDelete(DeleteBehavior.Cascade);
+        });
     }
 
     public async Task SeedDataAsync()
