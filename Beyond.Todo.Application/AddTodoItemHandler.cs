@@ -1,6 +1,6 @@
 ﻿using Beyond.Todo.Domain.Entities;
 using Beyond.Todo.Infrastructure;
-using Mediator;
+using MediatR;
 
 namespace Beyond.Todo.Application;
 
@@ -13,7 +13,7 @@ public sealed class AddTodoItemHandler : IRequestHandler<AddTodoItemCommand, int
         _repo = repo;
     }
 
-    public async ValueTask<int> Handle(AddTodoItemCommand request, CancellationToken cancellationToken)
+    public async Task<int> Handle(AddTodoItemCommand request, CancellationToken cancellationToken)
     {
         var categories = await _repo.GetAllCategoriesAsync();
         if (!categories.Contains(request.Category))

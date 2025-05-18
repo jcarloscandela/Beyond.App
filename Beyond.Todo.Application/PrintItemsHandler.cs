@@ -1,6 +1,6 @@
 ﻿using Beyond.Todo.Application.Models;
 using Beyond.Todo.Infrastructure;
-using Mediator;
+using MediatR;
 
 namespace Beyond.Todo.Application;
 
@@ -13,7 +13,7 @@ public sealed class PrintItemsHandler : IRequestHandler<PrintItemsQuery, List<To
         _repo = repo;
     }
 
-    public async ValueTask<List<TodoItemDto>> Handle(PrintItemsQuery request, CancellationToken cancellationToken)
+    public async Task<List<TodoItemDto>> Handle(PrintItemsQuery request, CancellationToken cancellationToken)
     {
         var items = await _repo.GetAllItemsAsync();
 

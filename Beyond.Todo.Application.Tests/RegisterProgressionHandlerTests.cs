@@ -1,6 +1,6 @@
 ﻿using Beyond.Todo.Domain.Entities;
 using Beyond.Todo.Infrastructure;
-using Mediator;
+using MediatR;
 using NSubstitute;
 
 namespace Beyond.Todo.Application.Tests;

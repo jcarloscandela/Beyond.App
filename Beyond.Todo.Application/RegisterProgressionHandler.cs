@@ -1,9 +1,9 @@
 ﻿using Beyond.Todo.Infrastructure;
-using Mediator;
+using MediatR;
 
 namespace Beyond.Todo.Application;
 
-public sealed class RegisterProgressionHandler : IRequestHandler<RegisterProgressionCommand>
+public sealed class RegisterProgressionHandler : IRequestHandler<RegisterProgressionCommand, Unit>
 {
     private readonly ITodoListRepository _repo;
 
@@ -12,7 +12,7 @@ public sealed class RegisterProgressionHandler : IRequestHandler<RegisterProgres
         _repo = repo;
     }
 
-    public async ValueTask<Unit> Handle(RegisterProgressionCommand request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(RegisterProgressionCommand request, CancellationToken cancellationToken)
     {
         var item = await _repo.GetByIdAsync(request.Id) ?? throw new KeyNotFoundException();
         item.AddProgression(request.Date, request.Percent);

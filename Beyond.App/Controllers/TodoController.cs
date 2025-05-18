@@ -1,6 +1,6 @@
 using Beyond.Todo.API.Models;
 using Beyond.Todo.Application;
-using Mediator;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Beyond.App.Controllers

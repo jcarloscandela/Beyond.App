@@ -1,5 +1,5 @@
 ﻿using Beyond.Todo.Application.Models;
-using Mediator;
+using MediatR;
 
 namespace Beyond.Todo.Application;
 

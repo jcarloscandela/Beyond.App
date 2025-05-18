@@ -1,5 +1,5 @@
-﻿using Mediator;
+﻿using MediatR;
 
 namespace Beyond.Todo.Application;
 
-public sealed record RemoveItemCommand(int Id) : IRequest;
+public sealed record RemoveItemCommand(int Id) : IRequest<Unit>;

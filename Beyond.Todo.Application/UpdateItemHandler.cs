@@ -1,9 +1,9 @@
 ﻿using Beyond.Todo.Infrastructure;
-using Mediator;
+using MediatR;
 
 namespace Beyond.Todo.Application;
 
-public sealed class UpdateItemHandler : IRequestHandler<UpdateItemCommand>
+public sealed class UpdateItemHandler : IRequestHandler<UpdateItemCommand, Unit>
 {
     private readonly ITodoListRepository _repo;
 
@@ -12,7 +12,7 @@ public sealed class UpdateItemHandler : IRequestHandler<UpdateItemCommand>
         _repo = repo;
     }
 
-    public async ValueTask<Unit> Handle(UpdateItemCommand request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(UpdateItemCommand request, CancellationToken cancellationToken)
     {
         var item = await _repo.GetByIdAsync(request.Id) ?? throw new KeyNotFoundException();
 
