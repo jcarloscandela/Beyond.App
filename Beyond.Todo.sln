@@ -15,6 +15,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Beyond.Todo.Application.Tes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Beyond.Todo.Console", "Beyond.Todo.Console\Beyond.Todo.Console.csproj", "{2FFA6A7B-C255-4BAA-9BA6-6E8A34C2925F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Beyond.Todo.WebApp", "Beyond.Todo.WebApp\Beyond.Todo.WebApp\Beyond.Todo.WebApp.csproj", "{D56716B3-F9EC-4FE8-A355-A09342D5ADD4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Beyond.Todo.WebApp.Client", "Beyond.Todo.WebApp\Beyond.Todo.WebApp.Client\Beyond.Todo.WebApp.Client.csproj", "{8EEC925A-76B6-4222-8C22-216C20747842}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +49,14 @@ Global
 		{2FFA6A7B-C255-4BAA-9BA6-6E8A34C2925F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2FFA6A7B-C255-4BAA-9BA6-6E8A34C2925F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2FFA6A7B-C255-4BAA-9BA6-6E8A34C2925F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D56716B3-F9EC-4FE8-A355-A09342D5ADD4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D56716B3-F9EC-4FE8-A355-A09342D5ADD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D56716B3-F9EC-4FE8-A355-A09342D5ADD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D56716B3-F9EC-4FE8-A355-A09342D5ADD4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8EEC925A-76B6-4222-8C22-216C20747842}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8EEC925A-76B6-4222-8C22-216C20747842}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8EEC925A-76B6-4222-8C22-216C20747842}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8EEC925A-76B6-4222-8C22-216C20747842}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
