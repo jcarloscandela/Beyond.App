@@ -6,13 +6,6 @@
     <FluentDialogHeader>
         <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
             <FluentLabel Typo="Typography.H4">@(IsEdit ? "Edit Todo" : "Create Todo")</FluentLabel>
-            @if (IsEdit)
-            {
-                <FluentButton Appearance="Appearance.Stealth" IconStart="@(new Icons.Regular.Size20.Delete())"
-                    OnClick="Delete" Style="color: var(--error);">
-                    Delete
-                </FluentButton>
-            }
         </div>
     </FluentDialogHeader>
     <FluentDialogBody>
@@ -36,14 +29,12 @@
     <FluentDialogFooter>
         <FluentButton Appearance="Appearance.Lightweight" OnClick="@Cancel">Cancel</FluentButton>
         <FluentButton Type="ButtonType.Submit" Appearance="Appearance.Accent" OnClick="@Submit">Save</FluentButton>
+        @if (IsEdit)
+        {
+            <FluentButton Appearance="Appearance.Accent" BackgroundColor="red" OnClick="@Delete">Delete</FluentButton>
+        }
     </FluentDialogFooter>
 </FluentDialog>
-
-<style>
-    .form-group {
-        margin-bottom: 16px;
-    }
-</style>
 
 @code {
     [Parameter]
