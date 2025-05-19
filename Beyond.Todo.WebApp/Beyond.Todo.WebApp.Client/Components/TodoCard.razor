@@ -1,22 +1,21 @@
 @using Beyond.Todo.Application.Models
 @using Microsoft.FluentUI.AspNetCore.Components
+@using Microsoft.AspNetCore.Components.Web
 
-<FluentCard>
-    <FluentStack Style="padding: 16px;">
-        <h3>@Item.Title</h3>
-        <p>@Item.Description</p>
-        @{
-            var progress = Item.Progressions.LastOrDefault()?.CumulativePercent ?? 0;
-            var progressValue = Convert.ToInt32(progress);
-        }
-        <div style="display: flex; align-items: center; gap: 12px;">
-            <FluentProgressRing Min="0" Max="100" Value="@progressValue" />
-            <FluentLabel>
-                @($"{progressValue}%")
-            </FluentLabel>
-        </div>
-    </FluentStack>
-</FluentCard>
+<div style="display: flex; flex-direction: column; gap: 16px;">
+    <NavLink href="@($"/todo/{Item.Id}")" style="text-decoration: none;">
+        <FluentCard style="cursor: pointer;">
+            <FluentStack
+                Style="display: flex; flex-direction: column; padding: 16px; gap: 8px; align-items: flex-start;">
+                <h3>@Item.Title</h3>
+                <p>@Item.Description</p>
+                <FluentLabel Style="width: 20px;">@($"{Item.TotalProgression}%")</FluentLabel>
+                <FluentProgress Min="0" Max="100" Value="@Item.TotalProgression" Width="200px"
+                    Stroke="@(Microsoft.FluentUI.AspNetCore.Components.ProgressStroke.Normal)" />
+            </FluentStack>
+        </FluentCard>
+    </NavLink>
+</div>
 
 @code {
     [Parameter]

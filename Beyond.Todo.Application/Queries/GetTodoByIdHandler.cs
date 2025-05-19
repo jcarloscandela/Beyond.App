@@ -1,23 +1,26 @@
-﻿using Beyond.Todo.Application.Models;
+using Beyond.Todo.Application.Models;
 using Beyond.Todo.Infrastructure.Interfaces;
 using MediatR;
 
 namespace Beyond.Todo.Application.Queries;
 
-public sealed class PrintItemsHandler : IRequestHandler<PrintItemsQuery, List<TodoItemDto>>
+public sealed class GetTodoByIdHandler : IRequestHandler<GetTodoByIdQuery, TodoItemDto>
 {
     private readonly ITodoListRepository _repo;
 
-    public PrintItemsHandler(ITodoListRepository repo)
+    public GetTodoByIdHandler(ITodoListRepository repo)
     {
         _repo = repo;
     }
 
-    public async Task<List<TodoItemDto>> Handle(PrintItemsQuery request, CancellationToken cancellationToken)
+    public async Task<TodoItemDto> Handle(GetTodoByIdQuery request, CancellationToken cancellationToken)
     {
-        var items = await _repo.GetAllItemsAsync();
+        var item = await _repo.GetByIdAsync(request.Id);
 
-        return items.Select(item => new TodoItemDto
+        if (item == null)
+            throw new KeyNotFoundException($"Todo item with ID {request.Id} not found");
+
+        return new TodoItemDto
         {
             Id = item.Id,
             Title = item.Title,
@@ -35,6 +38,6 @@ public sealed class PrintItemsHandler : IRequestHandler<PrintItemsQuery, List<To
                     return new ProgressionDto(p.Date, cumulative);
                 }).ToList(),
             TotalProgression = (int)(item.Progressions.Sum(x => x.Percent))
-        }).ToList();
+        };
     }
 }

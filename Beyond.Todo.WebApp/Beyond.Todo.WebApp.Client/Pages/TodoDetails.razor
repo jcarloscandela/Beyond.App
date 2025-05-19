@@ -1,0 +1,48 @@
+@page "/todo/{Id:int}"
+@using Beyond.Todo.Application.Models
+@inject HttpClient HttpClient
+
+<div class="container mt-4">
+    @if (todo != null)
+    {
+        <div class="card">
+            <div class="card-header">
+                <h3>@todo.Title</h3>
+            </div>
+            <div class="card-body">
+                <p class="card-text">@todo.Description</p>
+                <p class="mb-2"><strong>Category:</strong> @todo.Category</p>
+                <p class="mb-2"><strong>Status:</strong> @(todo.IsCompleted ? "Completed" : "In Progress")</p>
+
+                <h4 class="mt-4">Progress History</h4>
+                <div class="list-group mt-2">
+                    @foreach (var progression in todo.Progressions.OrderByDescending(p => p.Date))
+                    {
+                        <div class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">Progress: @progression.CumulativePercent%</h6>
+                                <small>@progression.Date.ToLocalTime().ToString("g")</small>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <p>Loading...</p>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private TodoItemDto? todo;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        todo = await HttpClient.GetFromJsonAsync<TodoItemDto>($"api/todo/{Id}");
+    }
+}

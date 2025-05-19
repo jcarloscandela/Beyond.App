@@ -32,6 +32,13 @@ namespace Beyond.App.Controllers
             return Ok(items);
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var item = await _mediator.Send(new GetTodoByIdQuery(id));
+            return Ok(item);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] AddTodoItemCommand command)
         {
