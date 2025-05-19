@@ -1,4 +1,5 @@
 @page "/todo"
+@using Beyond.Todo.Application.Commands
 @using Beyond.Todo.Application.Models
 @using Microsoft.FluentUI.AspNetCore.Components
 @using Beyond.Todo.WebApp.Client.Components
@@ -19,7 +20,7 @@
     @if (showDialog)
     {
         <TodoDialog @bind-IsVisible="showDialog" IsEdit="isEdit" TodoItem="selectedTodo" Categories="categories"
-            OnSave="HandleSaveAsync" />
+        OnSave="HandleSaveAsync" OnDelete="HandleDeleteAsync" />
     }
 
     @if (todos == null)
@@ -37,14 +38,14 @@
 
         <div class="pagination">
             <FluentButton Type="ButtonType.Button" Appearance="Appearance.Lightweight" Disabled="@(CurrentPage <= 1)"
-                OnClick="@(() => NavigateToPage(CurrentPage - 1))">
+            OnClick="@(() => NavigateToPage(CurrentPage - 1))">
                 Previous
             </FluentButton>
 
             <FluentLabel>Page @CurrentPage</FluentLabel>
 
             <FluentButton Type="ButtonType.Button" Appearance="Appearance.Lightweight" Disabled="@(!HasNextPage)"
-                OnClick="@(() => NavigateToPage(CurrentPage + 1))">
+            OnClick="@(() => NavigateToPage(CurrentPage + 1))">
                 Next
             </FluentButton>
         </div>
@@ -53,29 +54,29 @@
 
 <style>
     .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
     }
 
     .form-group {
-        margin-bottom: 16px;
+    margin-bottom: 16px;
     }
 
     .todo-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 20px;
-        padding: 20px 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px 0;
     }
 
     .pagination {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 16px;
-        padding: 20px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 0;
     }
 </style>
 
@@ -135,18 +136,29 @@
         if (string.IsNullOrWhiteSpace(todoDto.Title))
             return;
 
-        var command = new { Title = todoDto.Title, Description = todoDto.Description, Category = todoDto.Category };
         HttpResponseMessage response;
 
         if (isEdit && selectedTodo != null)
         {
-            response = await Http.PutAsJsonAsync($"api/todo/{selectedTodo.Id}", command);
+            var updateCommand = new UpdateItemCommand(selectedTodo.Id, todoDto.Description);
+            response = await Http.PutAsJsonAsync($"api/todo/{selectedTodo.Id}", updateCommand);
         }
         else
         {
-            response = await Http.PostAsJsonAsync("api/todo", command);
+            var createCommand = new AddTodoItemCommand(todoDto.Title, todoDto.Description, todoDto.Category);
+
+            response = await Http.PostAsJsonAsync("api/todo", createCommand);
         }
 
+        if (response.IsSuccessStatusCode)
+        {
+            await LoadTodos();
+        }
+    }
+
+    private async Task HandleDeleteAsync(int id)
+    {
+        var response = await Http.DeleteAsync($"api/todo/{id}");
         if (response.IsSuccessStatusCode)
         {
             await LoadTodos();

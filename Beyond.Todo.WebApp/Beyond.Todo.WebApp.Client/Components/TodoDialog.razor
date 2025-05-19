@@ -4,17 +4,27 @@
 
 <FluentDialog Modal="true" @bind-Visible="IsVisible">
     <FluentDialogHeader>
-        <FluentLabel Typo="Typography.H4">@(IsEdit ? "Edit Todo" : "Create Todo")</FluentLabel>
+        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+            <FluentLabel Typo="Typography.H4">@(IsEdit ? "Edit Todo" : "Create Todo")</FluentLabel>
+            @if (IsEdit)
+            {
+                <FluentButton Appearance="Appearance.Stealth" IconStart="@(new Icons.Regular.Size20.Delete())"
+                    OnClick="Delete" Style="color: var(--error);">
+                    Delete
+                </FluentButton>
+            }
+        </div>
     </FluentDialogHeader>
     <FluentDialogBody>
         <div class="form-group">
-            <FluentTextField Label="Title" @bind-Value="todoDto.Title" Required="true" />
+            <FluentTextField Label="Title" @bind-Value="todoDto.Title" Required="true" Disabled="@IsEdit" />
         </div>
         <div class="form-group">
-            <FluentTextArea Label="Description" @bind-Value="todoDto.Description" />
+            <FluentTextArea Label="Description" @bind-Value="todoDto.Description" Required="true" />
         </div>
         <div class="form-group">
-            <FluentSelect TOption="string" Label="Category" @bind-Value="todoDto.Category">
+            <FluentSelect TOption="string" Label="Category" @bind-Value="todoDto.Category" Required="true"
+                Disabled="@IsEdit">
                 <option value="">Select a category</option>
                 @foreach (var category in Categories)
                 {
@@ -54,6 +64,9 @@
     [Parameter]
     public EventCallback<CreateTodoDto> OnSave { get; set; }
 
+    [Parameter]
+    public EventCallback<int> OnDelete { get; set; }
+
     private CreateTodoDto todoDto = new();
 
     protected override void OnParametersSet()
@@ -80,10 +93,21 @@
 
     private async Task Submit()
     {
-        if (string.IsNullOrWhiteSpace(todoDto.Title))
+        if (string.IsNullOrWhiteSpace(todoDto.Title) ||
+        string.IsNullOrWhiteSpace(todoDto.Description) ||
+        string.IsNullOrWhiteSpace(todoDto.Category))
             return;
 
         await OnSave.InvokeAsync(todoDto);
         await IsVisibleChanged.InvokeAsync(false);
+    }
+
+    private async Task Delete()
+    {
+        if (TodoItem != null)
+        {
+            await OnDelete.InvokeAsync(TodoItem.Id);
+            await IsVisibleChanged.InvokeAsync(false);
+        }
     }
 }

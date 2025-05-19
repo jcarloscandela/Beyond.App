@@ -1,5 +1,4 @@
 using Beyond.Todo.API.Models;
-using Beyond.Todo.Application;
 using Beyond.Todo.Application.Commands;
 using Beyond.Todo.Application.Queries;
 using MediatR;
@@ -51,6 +50,25 @@ namespace Beyond.App.Controllers
         {
             await _mediator.Send(new RegisterProgressionCommand(id, body.Date, body.Percent));
             return Ok();
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] UpdateItemCommand command)
+        {
+            if (id != command.Id)
+            {
+                return BadRequest();
+            }
+
+            await _mediator.Send(command);
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            await _mediator.Send(new RemoveItemCommand(id));
+            return NoContent();
         }
     }
 }
