@@ -103,7 +103,6 @@
         }
 
         await OnSave.InvokeAsync(todoDto);
-        ToastService.ShowSuccess(IsEdit ? "Todo updated successfully!" : "Todo created successfully!");
         await IsVisibleChanged.InvokeAsync(false);
     }
 
@@ -112,7 +111,6 @@
         if (TodoItem != null)
         {
             await OnDelete.InvokeAsync(TodoItem.Id);
-            ToastService.ShowSuccess("Todo deleted successfully!");
             await IsVisibleChanged.InvokeAsync(false);
         }
     }

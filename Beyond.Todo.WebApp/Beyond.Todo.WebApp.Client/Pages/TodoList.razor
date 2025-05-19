@@ -6,6 +6,7 @@
 @using Beyond.Todo.WebApp.Client.Models
 @inject HttpClient Http
 @rendermode InteractiveServer
+@inject IToastService ToastService
 
 <PageTitle>Todo List</PageTitle>
 
@@ -137,11 +138,18 @@
             var createCommand = new AddTodoItemCommand(todoDto.Title, todoDto.Description, todoDto.Category);
 
             response = await Http.PostAsJsonAsync("api/todo", createCommand);
+
         }
 
         if (response.IsSuccessStatusCode)
         {
+            ToastService.ShowSuccess(isEdit ? "Todo updated successfully!" : "Todo created successfully!");
             await LoadTodos();
+        }
+        else
+        {
+            var errorMessage = await response.Content.ReadAsStringAsync();
+            ToastService.ShowError($"Error: {errorMessage}");
         }
     }
 
@@ -150,7 +158,14 @@
         var response = await Http.DeleteAsync($"api/todo/{id}");
         if (response.IsSuccessStatusCode)
         {
+            ToastService.ShowSuccess("Todo deleted successfully!");
             await LoadTodos();
+        }
+        else
+        {
+            var errorMessage = await response.Content.ReadAsStringAsync();
+            ToastService.ShowError($"Error: {errorMessage}");
+            //TODO: Show the customer error.
         }
     }
 }
