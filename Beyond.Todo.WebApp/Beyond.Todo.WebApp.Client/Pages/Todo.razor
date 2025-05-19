@@ -1,6 +1,7 @@
 @page "/todo"
 @using Beyond.Todo.Application.Models
 @using Microsoft.FluentUI.AspNetCore.Components
+@using Beyond.Todo.WebApp.Client.Components
 @inject HttpClient Http
 
 <PageTitle>Todo List</PageTitle>
@@ -17,22 +18,7 @@
         <div class="todo-grid">
             @foreach (var item in todos)
             {
-                <FluentCard>
-                    <FluentStack Style="padding: 16px;">
-                        <h3>@item.Title</h3>
-                        <p>@item.Description</p>
-                        @{
-                            var progress = item.Progressions.LastOrDefault()?.CumulativePercent ?? 0;
-                            var progressValue = Convert.ToInt32(progress);
-                        }
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <FluentProgressRing Min="0" Max="100" Value="@progressValue" />
-                            <FluentLabel>
-                                @($"{progressValue}%")
-                            </FluentLabel>
-                        </div>
-                    </FluentStack>
-                </FluentCard>
+                <TodoCard Item="@item" />
             }
         </div>
     }

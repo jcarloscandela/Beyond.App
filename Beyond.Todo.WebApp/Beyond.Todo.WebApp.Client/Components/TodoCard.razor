@@ -1,0 +1,24 @@
+@using Beyond.Todo.Application.Models
+@using Microsoft.FluentUI.AspNetCore.Components
+
+<FluentCard>
+    <FluentStack Style="padding: 16px;">
+        <h3>@Item.Title</h3>
+        <p>@Item.Description</p>
+        @{
+            var progress = Item.Progressions.LastOrDefault()?.CumulativePercent ?? 0;
+            var progressValue = Convert.ToInt32(progress);
+        }
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <FluentProgressRing Min="0" Max="100" Value="@progressValue" />
+            <FluentLabel>
+                @($"{progressValue}%")
+            </FluentLabel>
+        </div>
+    </FluentStack>
+</FluentCard>
+
+@code {
+    [Parameter]
+    public required TodoItemDto Item { get; set; }
+}
