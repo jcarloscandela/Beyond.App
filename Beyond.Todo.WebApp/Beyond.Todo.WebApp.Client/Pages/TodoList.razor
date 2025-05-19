@@ -2,13 +2,51 @@
 @using Beyond.Todo.Application.Models
 @using Microsoft.FluentUI.AspNetCore.Components
 @using Beyond.Todo.WebApp.Client.Components
+@using Beyond.Todo.WebApp.Client.Models
 @inject HttpClient Http
 @rendermode InteractiveServer
 
 <PageTitle>Todo List</PageTitle>
 
 <div class="container">
-    <h1>Todo List</h1>
+    <div class="header">
+        <h1>Todo List</h1>
+        <FluentButton Type="ButtonType.Button" Appearance="Appearance.Accent" OnClick="@(() => OpenCreateDialog())">
+            Create Todo
+        </FluentButton>
+    </div>
+
+    @if (showDialog)
+    {
+        <FluentDialog Modal="true" @bind-Visible="showDialog">
+            <FluentDialogHeader>
+                <FluentLabel Typo="Typography.H4">Create Todo</FluentLabel>
+            </FluentDialogHeader>
+            <FluentDialogBody>
+                <div class="form-group">
+                    <FluentTextField Label="Title" @bind-Value="newTodo.Title" Required="true" />
+                </div>
+                <div class="form-group">
+                    <FluentTextArea Label="Description" @bind-Value="newTodo.Description" />
+                </div>
+                <div class="form-group">
+                    <FluentSelect TOption="string" Label="Category" @bind-Value="newTodo.Category">
+                        <option value="">Select a category</option>
+                        @foreach (var category in categories)
+                        {
+                            <option value="@category.Name">@category.Name</option>
+                        }
+                    </FluentSelect>
+                </div>
+            </FluentDialogBody>
+            <FluentDialogFooter>
+                <FluentButton Appearance="Appearance.Lightweight" OnClick="@(() => showDialog = false)">Cancel
+                </FluentButton>
+                <FluentButton Type="ButtonType.Submit" Appearance="Appearance.Accent" OnClick="@CreateTodoAsync">Save
+                </FluentButton>
+            </FluentDialogFooter>
+        </FluentDialog>
+    }
 
     @if (todos == null)
     {
@@ -25,14 +63,14 @@
 
         <div class="pagination">
             <FluentButton Type="ButtonType.Button" Appearance="Appearance.Lightweight" Disabled="@(CurrentPage <= 1)"
-                          OnClick="@(() => NavigateToPage(CurrentPage - 1))">
+                OnClick="@(() => NavigateToPage(CurrentPage - 1))">
                 Previous
             </FluentButton>
 
             <FluentLabel>Page @CurrentPage</FluentLabel>
 
             <FluentButton Type="ButtonType.Button" Appearance="Appearance.Lightweight" Disabled="@(!HasNextPage)"
-                          OnClick="@(() => NavigateToPage(CurrentPage + 1))">
+                OnClick="@(() => NavigateToPage(CurrentPage + 1))">
                 Next
             </FluentButton>
         </div>
@@ -40,6 +78,17 @@
 </div>
 
 <style>
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 16px;
+    }
+
     .todo-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -60,16 +109,25 @@
     private PaginatedTodoItemsDto? todos;
     private int CurrentPage = 1;
     private const int PageSize = 10;
+    private bool showDialog = false;
+    private CreateTodoDto newTodo = new();
+    private List<CategoryDto> categories = new();
 
     protected override async Task OnInitializedAsync()
     {
         await LoadTodos();
+        await LoadCategories();
     }
 
     private async Task LoadTodos()
     {
         int skip = (CurrentPage - 1) * PageSize;
         todos = await Http.GetFromJsonAsync<PaginatedTodoItemsDto>($"api/todo?skip={skip}&take={PageSize}");
+    }
+
+    private async Task LoadCategories()
+    {
+        categories = await Http.GetFromJsonAsync<List<CategoryDto>>("api/todo/categories") ?? new();
     }
 
     public async Task NavigateToPage(int page)
@@ -80,4 +138,24 @@
     }
 
     private bool HasNextPage => todos != null && (CurrentPage * PageSize) < todos.TotalCount;
+
+    private void OpenCreateDialog()
+    {
+        newTodo = new CreateTodoDto();
+        showDialog = true;
+    }
+
+    private async Task CreateTodoAsync()
+    {
+        if (string.IsNullOrWhiteSpace(newTodo.Title))
+            return;
+
+        var command = new { Title = newTodo.Title, Description = newTodo.Description, Category = newTodo.Category };
+        var response = await Http.PostAsJsonAsync("api/todo", command);
+        if (response.IsSuccessStatusCode)
+        {
+            showDialog = false;
+            await LoadTodos();
+        }
+    }
 }
