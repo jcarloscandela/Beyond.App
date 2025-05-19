@@ -10,4 +10,5 @@ public interface ITodoListRepository
     Task SaveChangesAsync();
     void Remove(TodoItem item);
     Task<List<TodoItem>> GetAllItemsAsync(int skip = 0, int take = 10);
+    Task<int> CountAsync();
 }

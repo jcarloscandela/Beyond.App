@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Beyond.Todo.Application.Queries;
 
-public sealed class GetTodosHandler : IRequestHandler<GetTodosQuery, List<TodoItemDto>>
+public sealed class GetTodosHandler : IRequestHandler<GetTodosQuery, PaginatedTodoItemsDto>
 {
     private readonly ITodoListRepository _repo;
 
@@ -14,13 +14,21 @@ public sealed class GetTodosHandler : IRequestHandler<GetTodosQuery, List<TodoIt
         _repo = repo;
     }
 
-    public async Task<List<TodoItemDto>> Handle(GetTodosQuery request, CancellationToken cancellationToken)
+    public async Task<PaginatedTodoItemsDto> Handle(GetTodosQuery request, CancellationToken cancellationToken)
     {
-        var items = await _repo.GetAllItemsAsync();
+        var items = await _repo.GetAllItemsAsync(request.Skip, request.Take);
+        var totalCount =  await _repo.CountAsync();
 
-        return items.Skip(request.Skip)
-            .Take(request.Take)
+        var paginatedItems = items
             .Select(item => item.ToDto())
             .ToList();
+
+        return new PaginatedTodoItemsDto
+        {
+            Items = paginatedItems,
+            TotalCount = totalCount,
+            Skip = request.Skip,
+            Take = request.Take
+        };
     }
 }

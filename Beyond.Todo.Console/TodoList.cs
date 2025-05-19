@@ -68,11 +68,11 @@ public class TodoList : ITodoList
     public async void PrintItems()
     {
         System.Console.Clear();
-        var items = await ExecuteWithErrorHandling(
+        var result = await ExecuteWithErrorHandling(
             () => _mediator.Send(new GetTodosQuery(0, 1000)),
             "getting items");
 
-        if (items != null)
+        if (result != null)
         {
             var table = new Table();
 
@@ -83,7 +83,7 @@ public class TodoList : ITodoList
             table.AddColumn("Progress");
             table.AddColumn("Last Update");
 
-            foreach (var item in items)
+            foreach (var item in result.Items)
             {
                 var lastProgression = item.Progressions.MaxBy(p => p.Date);
                 var progress = lastProgression?.CumulativePercent ?? 0;

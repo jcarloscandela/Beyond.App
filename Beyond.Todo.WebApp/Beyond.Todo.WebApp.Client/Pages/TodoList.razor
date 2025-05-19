@@ -1,0 +1,80 @@
+@page "/todo"
+@using Beyond.Todo.Application.Models
+@using Microsoft.FluentUI.AspNetCore.Components
+@using Beyond.Todo.WebApp.Client.Components
+@inject HttpClient Http
+
+<PageTitle>Todo List</PageTitle>
+
+<div class="container">
+    <h1>Todo List</h1>
+
+    @if (todos == null)
+    {
+        <FluentProgressRing />
+    }
+    else
+    {
+        <div class="todo-grid">
+            @foreach (var item in todos.Items)
+            {
+                <TodoCard Item="@item" />
+            }
+        </div>
+
+        <div class="pagination">
+            <FluentButton Appearance="Appearance.Lightweight" Disabled="@(CurrentPage <= 1)"
+                OnClick="() => NavigateToPage(CurrentPage - 1)">
+                Previous
+            </FluentButton>
+            <FluentLabel>Page @CurrentPage</FluentLabel>
+            <FluentButton Appearance="Appearance.Lightweight" Disabled="@(!HasNextPage)"
+                OnClick="() => NavigateToPage(CurrentPage + 1)">
+                Next
+            </FluentButton>
+        </div>
+    }
+</div>
+
+<style>
+    .todo-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+        padding: 20px 0;
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 16px;
+        padding: 20px 0;
+    }
+</style>
+
+@code {
+    private PaginatedTodoItemsDto? todos;
+    private int CurrentPage = 1;
+    private const int PageSize = 10;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadTodos();
+    }
+
+    private async Task LoadTodos()
+    {
+        int skip = (CurrentPage - 1) * PageSize;
+        todos = await Http.GetFromJsonAsync<PaginatedTodoItemsDto>($"api/todo?skip={skip}&take={PageSize}");
+    }
+
+    private async Task NavigateToPage(int page)
+    {
+        if (page < 1) return;
+        CurrentPage = page;
+        await LoadTodos();
+    }
+
+    private bool HasNextPage => todos != null && (CurrentPage * PageSize) < todos.TotalCount;
+}

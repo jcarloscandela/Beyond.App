@@ -49,16 +49,32 @@ public class TodoDbContext : DbContext
         await Categories.AddRangeAsync(category1, category2, category3);
         await SaveChangesAsync();
 
-        var item1 = new TodoItem(1, "Learn C#", "Master C# programming language", 1);
-        item1.AddProgression(DateTime.Today.AddDays(-5), 30);
-        item1.AddProgression(DateTime.Today.AddDays(-2), 60);
+        var items = new List<TodoItem>
+        {
+            new TodoItem(1, "Learn C#", "Master C# programming language", 1),
+            new TodoItem(2, "Learn Entity Framework", "Understand EF Core and its features", 1),
+            new TodoItem(3, "Build a Web API", "Create a RESTful API using ASP.NET Core", 1),
+            new TodoItem(4, "Write Documentation", "Document the project architecture and APIs", 2),
+            new TodoItem(5, "Code Review", "Review pending pull requests", 2),
+            new TodoItem(6, "Team Meeting", "Weekly sync with the development team", 2),
+            new TodoItem(7, "Deploy to Production", "Deploy latest changes to production environment", 2),
+            new TodoItem(8, "Security Audit", "Perform security assessment of the application", 2),
+            new TodoItem(9, "Learn Docker", "Master containerization with Docker", 1),
+            new TodoItem(10, "Database Optimization", "Optimize database queries and indexes", 1),
+            new TodoItem(11, "Read Tech Blog", "Stay updated with latest tech trends", 3),
+            new TodoItem(12, "Exercise", "Daily workout routine", 3),
+            new TodoItem(13, "Plan Next Sprint", "Plan and prioritize tasks for next sprint", 2)
+        };
 
-        var item2 = new TodoItem(2, "Learn Entity Framework", "Understand EF Core and its features", 1);
-        item2.AddProgression(DateTime.Today.AddDays(-3), 40);
+        // Add some progress to different items
+        items[0].AddProgression(DateTime.Today.AddDays(-5), 30);
+        items[0].AddProgression(DateTime.Today.AddDays(-2), 60);
+        items[1].AddProgression(DateTime.Today.AddDays(-3), 40);
+        items[3].AddProgression(DateTime.Today.AddDays(-1), 25);
+        items[4].AddProgression(DateTime.Today.AddDays(-2), 75);
+        items[11].AddProgression(DateTime.Today.AddDays(-1), 50);
 
-        var item3 = new TodoItem(3, "Build a Web API", "Create a RESTful API using ASP.NET Core", 1);
-
-        await TodoItems.AddRangeAsync(item1, item2, item3);
+        await TodoItems.AddRangeAsync(items);
         await SaveChangesAsync();
     }
 }

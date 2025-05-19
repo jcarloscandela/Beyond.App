@@ -42,4 +42,9 @@ public class TodoListRepository : ITodoListRepository
     }
 
     public Task SaveChangesAsync() => _context.SaveChangesAsync();
+
+    public Task<int> CountAsync()
+    {
+        return _context.TodoItems.CountAsync();
+    }
 }

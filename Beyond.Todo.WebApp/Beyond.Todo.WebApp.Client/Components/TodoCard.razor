@@ -2,9 +2,9 @@
 @using Microsoft.FluentUI.AspNetCore.Components
 @using Microsoft.AspNetCore.Components.Web
 
-<div style="display: flex; flex-direction: column; gap: 16px;">
-    <NavLink href="@($"/todo/{Item.Id}")" style="text-decoration: none;">
-        <FluentCard style="cursor: pointer;">
+<div style="display: flex; flex-direction: column; gap: 16px; height: 100%;">
+    <NavLink href="@($"/todo/{Item.Id}")" style="text-decoration: none; height: 100%;">
+        <FluentCard style="cursor: pointer; height: 100%;">
             <FluentStack
                 Style="display: flex; flex-direction: column; padding: 16px; gap: 8px; align-items: flex-start;">
                 <h3>@Item.Title</h3>

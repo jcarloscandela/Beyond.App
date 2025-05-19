@@ -2,7 +2,9 @@
 @using Beyond.Todo.Application.Models
 @inject HttpClient HttpClient
 
-<div class="container mt-4">
+<PageTitle>Todo Details</PageTitle>
+
+<div class="container">
     @if (todo != null)
     {
         <div class="card">
