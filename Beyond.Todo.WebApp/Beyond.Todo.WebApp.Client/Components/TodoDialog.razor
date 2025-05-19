@@ -1,40 +1,46 @@
 @using Beyond.Todo.Application.Models
 @using Microsoft.FluentUI.AspNetCore.Components
 @using Beyond.Todo.WebApp.Client.Models
+@using System.ComponentModel.DataAnnotations
+@inject IToastService ToastService
 
-<FluentDialog Modal="true" @bind-Visible="IsVisible">
-    <FluentDialogHeader>
-        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-            <FluentLabel Typo="Typography.H4">@(IsEdit ? "Edit Todo" : "Create Todo")</FluentLabel>
-        </div>
-    </FluentDialogHeader>
-    <FluentDialogBody>
-        <div class="form-group">
-            <FluentTextField Label="Title" @bind-Value="todoDto.Title" Required="true" Disabled="@IsEdit" />
-        </div>
-        <div class="form-group">
-            <FluentTextArea Label="Description" @bind-Value="todoDto.Description" Required="true" />
-        </div>
-        <div class="form-group">
-            <FluentSelect TOption="string" Label="Category" @bind-Value="todoDto.Category" Required="true"
-                Disabled="@IsEdit">
-                <option value="">Select a category</option>
-                @foreach (var category in Categories)
-                {
-                    <option value="@category.Name">@category.Name</option>
-                }
-            </FluentSelect>
-        </div>
-    </FluentDialogBody>
-    <FluentDialogFooter>
-        <FluentButton Appearance="Appearance.Lightweight" OnClick="@Cancel">Cancel</FluentButton>
-        <FluentButton Type="ButtonType.Submit" Appearance="Appearance.Accent" OnClick="@Submit">Save</FluentButton>
-        @if (IsEdit)
-        {
-            <FluentButton Appearance="Appearance.Accent" BackgroundColor="red" OnClick="@Delete">Delete</FluentButton>
-        }
-    </FluentDialogFooter>
-</FluentDialog>
+<EditForm Model="@todoDto" OnValidSubmit="@Submit">
+    <DataAnnotationsValidator />
+    <FluentDialog Modal="true" @bind-Visible="IsVisible">
+        <FluentDialogHeader>
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <FluentLabel Typo="Typography.H4">@(IsEdit ? "Edit Todo" : "Create Todo")</FluentLabel>
+            </div>
+        </FluentDialogHeader>
+        <FluentDialogBody>
+            <div class="form-group">
+                <FluentTextField Label="Title" @bind-Value="todoDto.Title" Disabled="@IsEdit" />
+                <ValidationMessage For="@(() => todoDto.Title)" />
+            </div>
+            <div class="form-group">
+                <FluentTextArea Label="Description" @bind-Value="todoDto.Description" />
+                <ValidationMessage For="@(() => todoDto.Description)" />
+            </div>
+            <div class="form-group">
+                <FluentSelect TOption="string" Label="Category" @bind-Value="todoDto.Category" Disabled="@IsEdit">
+                    <option value="">Select a category</option>
+                    @foreach (var category in Categories)
+                    {
+                        <option value="@category.Name">@category.Name</option>
+                    }
+                </FluentSelect>
+            </div>
+        </FluentDialogBody>
+        <FluentDialogFooter>
+            <FluentButton Appearance="Appearance.Lightweight" OnClick="@Cancel">Cancel</FluentButton>
+            <FluentButton Type="ButtonType.Submit" Appearance="Appearance.Accent" OnClick="@Submit">Save</FluentButton>
+            @if (IsEdit)
+            {
+                <FluentButton Appearance="Appearance.Accent" BackgroundColor="red" OnClick="@Delete">Delete</FluentButton>
+            }
+        </FluentDialogFooter>
+    </FluentDialog>
+</EditForm>
 
 @code {
     [Parameter]
@@ -84,12 +90,20 @@
 
     private async Task Submit()
     {
-        if (string.IsNullOrWhiteSpace(todoDto.Title) ||
-        string.IsNullOrWhiteSpace(todoDto.Description) ||
-        string.IsNullOrWhiteSpace(todoDto.Category))
+        var validationContext = new ValidationContext(todoDto);
+        var validationResults = new List<ValidationResult>();
+
+        if (!Validator.TryValidateObject(todoDto, validationContext, validationResults, true))
+        {
+            foreach (var validationResult in validationResults)
+            {
+                ToastService.ShowWarning($"Validation Error: {validationResult.ErrorMessage ?? "Please fill in all required fields"}");
+            }
             return;
+        }
 
         await OnSave.InvokeAsync(todoDto);
+        ToastService.ShowSuccess(IsEdit ? "Todo updated successfully!" : "Todo created successfully!");
         await IsVisibleChanged.InvokeAsync(false);
     }
 
@@ -98,6 +112,7 @@
         if (TodoItem != null)
         {
             await OnDelete.InvokeAsync(TodoItem.Id);
+            ToastService.ShowSuccess("Todo deleted successfully!");
             await IsVisibleChanged.InvokeAsync(false);
         }
     }
