@@ -26,9 +26,9 @@ namespace Beyond.App.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetItems()
+        public async Task<IActionResult> GetItems([FromQuery] int skip = 0, [FromQuery] int take = 10)
         {
-            var items = await _mediator.Send(new PrintItemsQuery());
+            var items = await _mediator.Send(new GetTodosQuery(skip, take));
             return Ok(items);
         }
 

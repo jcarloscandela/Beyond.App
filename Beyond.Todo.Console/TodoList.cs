@@ -69,8 +69,8 @@ public class TodoList : ITodoList
     {
         System.Console.Clear();
         var items = await ExecuteWithErrorHandling(
-            () => _mediator.Send(new PrintItemsQuery()),
-            "printing items");
+            () => _mediator.Send(new GetTodosQuery(0, 1000)),
+            "getting items");
 
         if (items != null)
         {
@@ -121,7 +121,7 @@ public class TodoList : ITodoList
         {
             return categories.Select(c => c.Name).ToList();
         }
-        
+
         return new List<string>();
     }
 }
