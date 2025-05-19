@@ -3,21 +3,25 @@
 @using Microsoft.AspNetCore.Components.Web
 
 <div style="display: flex; flex-direction: column; gap: 16px; height: 100%;">
-    <NavLink href="@($"/todo/{Item.Id}")" style="text-decoration: none; height: 100%;">
-        <FluentCard style="cursor: pointer; height: 100%;">
+    <div style="cursor: pointer; height: 100%;" @onclick="@(() => OnEdit.InvokeAsync(Item))">
+        <FluentCard>
             <FluentStack
                 Style="display: flex; flex-direction: column; padding: 16px; gap: 8px; align-items: flex-start;">
                 <h3>@Item.Title</h3>
                 <p>@Item.Description</p>
+                <p>#@Item.Category</p>
                 <FluentLabel Style="width: 20px;">@($"{Item.TotalProgression}%")</FluentLabel>
                 <FluentProgress Min="0" Max="100" Value="@Item.TotalProgression" Width="200px"
                     Stroke="@(Microsoft.FluentUI.AspNetCore.Components.ProgressStroke.Normal)" />
             </FluentStack>
         </FluentCard>
-    </NavLink>
+    </div>
 </div>
 
 @code {
     [Parameter]
     public required TodoItemDto Item { get; set; }
+
+    [Parameter]
+    public EventCallback<TodoItemDto> OnEdit { get; set; }
 }

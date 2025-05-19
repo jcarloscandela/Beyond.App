@@ -1,0 +1,89 @@
+@using Beyond.Todo.Application.Models
+@using Microsoft.FluentUI.AspNetCore.Components
+@using Beyond.Todo.WebApp.Client.Models
+
+<FluentDialog Modal="true" @bind-Visible="IsVisible">
+    <FluentDialogHeader>
+        <FluentLabel Typo="Typography.H4">@(IsEdit ? "Edit Todo" : "Create Todo")</FluentLabel>
+    </FluentDialogHeader>
+    <FluentDialogBody>
+        <div class="form-group">
+            <FluentTextField Label="Title" @bind-Value="todoDto.Title" Required="true" />
+        </div>
+        <div class="form-group">
+            <FluentTextArea Label="Description" @bind-Value="todoDto.Description" />
+        </div>
+        <div class="form-group">
+            <FluentSelect TOption="string" Label="Category" @bind-Value="todoDto.Category">
+                <option value="">Select a category</option>
+                @foreach (var category in Categories)
+                {
+                    <option value="@category.Name">@category.Name</option>
+                }
+            </FluentSelect>
+        </div>
+    </FluentDialogBody>
+    <FluentDialogFooter>
+        <FluentButton Appearance="Appearance.Lightweight" OnClick="@Cancel">Cancel</FluentButton>
+        <FluentButton Type="ButtonType.Submit" Appearance="Appearance.Accent" OnClick="@Submit">Save</FluentButton>
+    </FluentDialogFooter>
+</FluentDialog>
+
+<style>
+    .form-group {
+        margin-bottom: 16px;
+    }
+</style>
+
+@code {
+    [Parameter]
+    public bool IsVisible { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> IsVisibleChanged { get; set; }
+
+    [Parameter]
+    public bool IsEdit { get; set; }
+
+    [Parameter]
+    public TodoItemDto? TodoItem { get; set; }
+
+    [Parameter]
+    public List<CategoryDto> Categories { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<CreateTodoDto> OnSave { get; set; }
+
+    private CreateTodoDto todoDto = new();
+
+    protected override void OnParametersSet()
+    {
+        if (IsEdit && TodoItem != null)
+        {
+            todoDto = new CreateTodoDto
+            {
+                Title = TodoItem.Title,
+                Description = TodoItem.Description,
+                Category = TodoItem.Category
+            };
+        }
+        else if (!IsEdit)
+        {
+            todoDto = new CreateTodoDto();
+        }
+    }
+
+    private async Task Cancel()
+    {
+        await IsVisibleChanged.InvokeAsync(false);
+    }
+
+    private async Task Submit()
+    {
+        if (string.IsNullOrWhiteSpace(todoDto.Title))
+            return;
+
+        await OnSave.InvokeAsync(todoDto);
+        await IsVisibleChanged.InvokeAsync(false);
+    }
+}

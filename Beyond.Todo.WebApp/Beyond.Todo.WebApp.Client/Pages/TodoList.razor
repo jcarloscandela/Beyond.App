@@ -18,34 +18,8 @@
 
     @if (showDialog)
     {
-        <FluentDialog Modal="true" @bind-Visible="showDialog">
-            <FluentDialogHeader>
-                <FluentLabel Typo="Typography.H4">Create Todo</FluentLabel>
-            </FluentDialogHeader>
-            <FluentDialogBody>
-                <div class="form-group">
-                    <FluentTextField Label="Title" @bind-Value="newTodo.Title" Required="true" />
-                </div>
-                <div class="form-group">
-                    <FluentTextArea Label="Description" @bind-Value="newTodo.Description" />
-                </div>
-                <div class="form-group">
-                    <FluentSelect TOption="string" Label="Category" @bind-Value="newTodo.Category">
-                        <option value="">Select a category</option>
-                        @foreach (var category in categories)
-                        {
-                            <option value="@category.Name">@category.Name</option>
-                        }
-                    </FluentSelect>
-                </div>
-            </FluentDialogBody>
-            <FluentDialogFooter>
-                <FluentButton Appearance="Appearance.Lightweight" OnClick="@(() => showDialog = false)">Cancel
-                </FluentButton>
-                <FluentButton Type="ButtonType.Submit" Appearance="Appearance.Accent" OnClick="@CreateTodoAsync">Save
-                </FluentButton>
-            </FluentDialogFooter>
-        </FluentDialog>
+        <TodoDialog @bind-IsVisible="showDialog" IsEdit="isEdit" TodoItem="selectedTodo" Categories="categories"
+            OnSave="HandleSaveAsync" />
     }
 
     @if (todos == null)
@@ -57,7 +31,7 @@
         <div class="todo-grid">
             @foreach (var item in todos.Items)
             {
-                <TodoCard Item="@item" />
+                <TodoCard Item="@item" OnEdit="HandleEdit" />
             }
         </div>
 
@@ -109,8 +83,9 @@
     private PaginatedTodoItemsDto? todos;
     private int CurrentPage = 1;
     private const int PageSize = 10;
-    private bool showDialog = false;
-    private CreateTodoDto newTodo = new();
+    private bool showDialog;
+    private bool isEdit = false;
+    private TodoItemDto? selectedTodo;
     private List<CategoryDto> categories = new();
 
     protected override async Task OnInitializedAsync()
@@ -139,22 +114,41 @@
 
     private bool HasNextPage => todos != null && (CurrentPage * PageSize) < todos.TotalCount;
 
-    private void OpenCreateDialog()
+    private async Task OpenCreateDialog()
     {
-        newTodo = new CreateTodoDto();
+        selectedTodo = null;
+        isEdit = false;
+        StateHasChanged();
         showDialog = true;
     }
 
-    private async Task CreateTodoAsync()
+    private async Task HandleEdit(TodoItemDto todo)
     {
-        if (string.IsNullOrWhiteSpace(newTodo.Title))
+        selectedTodo = todo;
+        isEdit = true;
+        StateHasChanged();
+        showDialog = true;
+    }
+
+    private async Task HandleSaveAsync(CreateTodoDto todoDto)
+    {
+        if (string.IsNullOrWhiteSpace(todoDto.Title))
             return;
 
-        var command = new { Title = newTodo.Title, Description = newTodo.Description, Category = newTodo.Category };
-        var response = await Http.PostAsJsonAsync("api/todo", command);
+        var command = new { Title = todoDto.Title, Description = todoDto.Description, Category = todoDto.Category };
+        HttpResponseMessage response;
+
+        if (isEdit && selectedTodo != null)
+        {
+            response = await Http.PutAsJsonAsync($"api/todo/{selectedTodo.Id}", command);
+        }
+        else
+        {
+            response = await Http.PostAsJsonAsync("api/todo", command);
+        }
+
         if (response.IsSuccessStatusCode)
         {
-            showDialog = false;
             await LoadTodos();
         }
     }
