@@ -3,6 +3,7 @@
 @using Microsoft.FluentUI.AspNetCore.Components
 @using Beyond.Todo.WebApp.Client.Components
 @inject HttpClient Http
+@rendermode InteractiveServer
 
 <PageTitle>Todo List</PageTitle>
 
@@ -23,13 +24,15 @@
         </div>
 
         <div class="pagination">
-            <FluentButton Appearance="Appearance.Lightweight" Disabled="@(CurrentPage <= 1)"
-                OnClick="() => NavigateToPage(CurrentPage - 1)">
+            <FluentButton Type="ButtonType.Button" Appearance="Appearance.Lightweight" Disabled="@(CurrentPage <= 1)"
+                          OnClick="@(() => NavigateToPage(CurrentPage - 1))">
                 Previous
             </FluentButton>
+
             <FluentLabel>Page @CurrentPage</FluentLabel>
-            <FluentButton Appearance="Appearance.Lightweight" Disabled="@(!HasNextPage)"
-                OnClick="() => NavigateToPage(CurrentPage + 1)">
+
+            <FluentButton Type="ButtonType.Button" Appearance="Appearance.Lightweight" Disabled="@(!HasNextPage)"
+                          OnClick="@(() => NavigateToPage(CurrentPage + 1))">
                 Next
             </FluentButton>
         </div>
@@ -69,7 +72,7 @@
         todos = await Http.GetFromJsonAsync<PaginatedTodoItemsDto>($"api/todo?skip={skip}&take={PageSize}");
     }
 
-    private async Task NavigateToPage(int page)
+    public async Task NavigateToPage(int page)
     {
         if (page < 1) return;
         CurrentPage = page;
