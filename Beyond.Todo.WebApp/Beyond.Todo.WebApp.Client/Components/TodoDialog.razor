@@ -49,7 +49,14 @@
                     {
                         <div style="margin-top: 1rem; padding: 1rem; border: 1px solid #ddd; border-radius: 4px;">
                             <div style="display: flex; flex-direction: column; gap: 1rem;">
-                                <FluentCalendar TValue="DateTime?" @bind-Value="progressDate" />
+                                <div style="display: flex; gap: 1rem;">
+                                    <div style="flex: 1;">
+                                        <FluentCalendar TValue="DateTime?" @bind-Value="progressDate" />
+                                    </div>
+                                    <div style="width: 150px;">
+                                        <FluentTimePicker @bind-Value="@MyTime0" />
+                                    </div>
+                                </div>
                                 <FluentLabel>Progress @progressPercent %</FluentLabel>
                                 <FluentSlider Min="0" Max="100" @bind-Value="progressPercent" Step="1" />
                                 <div style="display: flex; justify-content: flex-end; gap: 0.5rem;">
@@ -119,7 +126,8 @@
 
     private CreateTodoDto todoDto = new();
     private bool showProgressForm = false;
-    private DateTime? progressDate = DateTime.Now;
+    private DateTime? progressDate = DateTime.Now.Date;
+    private DateTime? MyTime0 = DateTime.Now;
     private int progressPercent = 0;
 
     protected override void OnParametersSet()
@@ -175,9 +183,12 @@
     {
         if (TodoItem == null || !progressDate.HasValue) return;
 
+        // Combine date and time
+        var combinedDateTime = progressDate.Value.Date.Add(MyTime0?.TimeOfDay ?? DateTime.Now.TimeOfDay);
+
         var response = await HttpClient.PostAsJsonAsync($"api/todo/{TodoItem.Id}/progression", new
         {
-            Date = progressDate.Value,
+            Date = combinedDateTime,
             Percent = progressPercent
         });
 
