@@ -1,4 +1,6 @@
-﻿namespace Beyond.Todo.Domain.Entities;
+﻿using Beyond.Todo.Domain.Exceptions;
+
+namespace Beyond.Todo.Domain.Entities;
 
 public class Progression
 {
@@ -11,7 +13,7 @@ public class Progression
     public Progression(int todoItemId, DateTime date, decimal percent)
     {
         if (percent <= 0 || percent >= 100)
-            throw new ArgumentException("Percent must be > 0 and < 100");
+            throw new TodoException("Percent must be > 0 and < 100");
 
         TodoItemId = todoItemId;
         Date = date;

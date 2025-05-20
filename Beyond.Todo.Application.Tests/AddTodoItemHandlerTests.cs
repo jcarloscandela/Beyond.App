@@ -1,4 +1,5 @@
 ﻿using Beyond.Todo.Application.Commands;
+using Beyond.Todo.Application.Exceptions;
 using Beyond.Todo.Domain.Entities;
 using Beyond.Todo.Infrastructure.Interfaces;
 using NSubstitute;
@@ -42,14 +43,14 @@ public class AddTodoItemHandlerTests
     }
 
     [Fact]
-    public async Task Handle_InvalidCategory_ThrowsArgumentException()
+    public async Task Handle_InvalidCategory_ThrowsTodoException()
     {
         // Arrange  
         var command = new AddTodoItemCommand("Title", "Desc", "InvalidCategory");
         _categoryRepo.GetCategoryByNameAsync("InvalidCategory").Returns((Category?)null);
 
         // Act & Assert  
-        var ex = await Assert.ThrowsAsync<ArgumentException>(async () => await _handler.Handle(command, CancellationToken.None));
+        var ex = await Assert.ThrowsAsync<TodoException>(async () => await _handler.Handle(command, CancellationToken.None));
         Assert.Equal("Category 'InvalidCategory' not found.", ex.Message);
 
         await _todoRepo.DidNotReceive().AddAsync(Arg.Any<TodoItem>());

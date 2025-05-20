@@ -184,9 +184,8 @@
         }
         else
         {
-            var errorMessage = await response.Content.ReadAsStringAsync();
-            var errorDetails = errorMessage.Split(']')[0].Split('[').Last();
-            ToastService.ShowError($"Error: {errorDetails}");
+            var errorResponse = await response.Content.ReadFromJsonAsync<ApiErrorResponse>();
+            ToastService.ShowError(errorResponse?.Message ?? "An unexpected error occurred");
         }
     }
 }

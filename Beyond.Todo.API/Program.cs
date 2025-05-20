@@ -1,8 +1,9 @@
 using Scalar.AspNetCore;
+using Beyond.Todo.API.Middleware;
 using Beyond.Todo.Application;
 using Beyond.Todo.Infrastructure;
 
-namespace Beyond.App
+namespace Beyond.Todo.API
 {
     public class Program
     {
@@ -26,6 +27,8 @@ namespace Beyond.App
                 app.MapOpenApi();
                 app.MapScalarApiReference();
             }
+
+            app.UseErrorHandling();
 
             app.UseHttpsRedirection();
 
