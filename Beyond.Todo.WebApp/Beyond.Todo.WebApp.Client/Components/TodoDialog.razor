@@ -1,9 +1,11 @@
 @using Beyond.Todo.Application.Models
+@using Beyond.Todo.WebApp.Client.Services
 @using Microsoft.FluentUI.AspNetCore.Components
 @using Beyond.Todo.WebApp.Client.Models
 @using System.ComponentModel.DataAnnotations
 @inject IToastService ToastService
 @inject HttpClient HttpClient
+@inject IHttpResponseHandler HttpResponseHandler
 
 <EditForm Model="@todoDto" OnValidSubmit="@Submit">
     <DataAnnotationsValidator />
@@ -179,17 +181,11 @@
             Percent = progressPercent
         });
 
-        if (response.IsSuccessStatusCode)
+        if (await HttpResponseHandler.HandleResponseAsync(response, "Progress registered successfully"))
         {
-            ToastService.ShowSuccess("Progress registered successfully");
             showProgressForm = false;
             await OnProgressRegistered.InvokeAsync();
             await IsVisibleChanged.InvokeAsync(false);
-        }
-        else
-        {
-            var errorResponse = await response.Content.ReadFromJsonAsync<ApiErrorResponse>();
-            ToastService.ShowError(errorResponse?.Message ?? "An unexpected error occurred");
         }
     }
 }

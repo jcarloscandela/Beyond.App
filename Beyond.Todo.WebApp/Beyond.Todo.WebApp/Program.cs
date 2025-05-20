@@ -1,3 +1,4 @@
+using Beyond.Todo.WebApp.Client.Services;
 using Beyond.Todo.WebApp.Components;
 using Microsoft.FluentUI.AspNetCore.Components;
 
@@ -14,6 +15,7 @@ namespace Beyond.Todo.WebApp
                 .AddInteractiveServerComponents()
                 .AddInteractiveWebAssemblyComponents();
             builder.Services.AddFluentUIComponents();
+            builder.Services.AddScoped<IHttpResponseHandler, HttpResponseHandler>();
             builder.Services.AddHttpClient("TodoApi", client =>
             {
                 client.BaseAddress = new Uri("https://localhost:7026");

@@ -4,9 +4,10 @@
 @using Microsoft.FluentUI.AspNetCore.Components
 @using Beyond.Todo.WebApp.Client.Components
 @using Beyond.Todo.WebApp.Client.Models
+@using Beyond.Todo.WebApp.Client.Services
 @inject HttpClient Http
 @rendermode InteractiveServer
-@inject IToastService ToastService
+@inject IHttpResponseHandler HttpResponseHandler
 
 <PageTitle>Todo List</PageTitle>
 
@@ -136,35 +137,21 @@
         else
         {
             var createCommand = new AddTodoItemCommand(todoDto.Title, todoDto.Description, todoDto.Category);
-
             response = await Http.PostAsJsonAsync("api/todo", createCommand);
-
         }
 
-        if (response.IsSuccessStatusCode)
+        if (await HttpResponseHandler.HandleResponseAsync(response, isEdit ? "Todo updated successfully!" : "Todo created successfully!"))
         {
-            ToastService.ShowSuccess(isEdit ? "Todo updated successfully!" : "Todo created successfully!");
             await LoadTodos();
-        }
-        else
-        {
-            var errorResponse = await response.Content.ReadFromJsonAsync<ApiErrorResponse>();
-            ToastService.ShowError(errorResponse?.Message ?? "An unexpected error occurred");
         }
     }
 
     private async Task HandleDeleteAsync(int id)
     {
         var response = await Http.DeleteAsync($"api/todo/{id}");
-        if (response.IsSuccessStatusCode)
+        if (await HttpResponseHandler.HandleResponseAsync(response, "Todo deleted successfully!"))
         {
-            ToastService.ShowSuccess("Todo deleted successfully!");
             await LoadTodos();
-        }
-        else
-        {
-            var errorResponse = await response.Content.ReadFromJsonAsync<ApiErrorResponse>();
-            ToastService.ShowError(errorResponse?.Message ?? "An unexpected error occurred");
         }
     }
 }
