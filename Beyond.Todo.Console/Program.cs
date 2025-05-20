@@ -65,7 +65,7 @@ internal class Program
 
                     case "4":
                         var progressId = AnsiConsole.Ask<int>("Enter [green]item ID[/]:");
-                        var percent = AnsiConsole.Ask<decimal>("Enter [green]progress percentage[/] (0-100):");
+                        var percent = AnsiConsole.Ask<int>("Enter [green]progress percentage[/] (0-100):");
                         todoList.RegisterProgression(progressId, DateTime.Now, percent);
                         todoList.PrintItems();
                         break;

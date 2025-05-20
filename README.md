@@ -48,9 +48,12 @@ The API will be available at `https://localhost:7072` and the web application wi
 
 - Create, read, update, and delete todo items
 - Categorize todos
-- Track progression of todo items
+- Track progression of todo items with history
 - Web interface with modern UI
 - Console interface for command-line operations
+- Toast notifications for important actions
+- Comprehensive error handling
+- User-friendly error messages
 
 ## Project Architecture
 
@@ -58,3 +61,18 @@ The API will be available at `https://localhost:7072` and the web application wi
 - CQRS pattern for command and query separation
 - Repository pattern for data access
 - Unit tests for application logic
+- Middleware for consistent error handling
+
+## Roadmap
+
+The following features are currently in development:
+
+1. **Real-time Updates**: Integration of SignalR for real-time notifications when todo items are created, updated, or deleted.
+2. **Database Implementation**: Adding persistent storage with a proper database solution.
+
+## Testing
+
+The application includes a comprehensive test suite covering:
+- Command handlers (Add, Update, Remove, Register Progression)
+- Query handlers (Get Todos, Get Categories, Get Todo by Id)
+- Business logic and domain rules
