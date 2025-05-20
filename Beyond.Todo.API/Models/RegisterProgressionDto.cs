@@ -3,5 +3,5 @@
 public class RegisterProgressionDto
 {
     public DateTime Date { get; set; }
-    public decimal Percent { get; set; }
+    public int Percent { get; set; }
 }

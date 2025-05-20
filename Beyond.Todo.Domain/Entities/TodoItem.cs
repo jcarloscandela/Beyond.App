@@ -13,7 +13,7 @@ public class TodoItem
     public Category Category { get; private set; }
     public IReadOnlyCollection<Progression> Progressions => _progressions.AsReadOnly();
     public bool IsCompleted => _progressions.Sum(p => p.Percent) >= 100;
-    public decimal TotalProgress => _progressions.Sum(p => p.Percent);
+    public int TotalProgress => _progressions.Sum(p => p.Percent);
 
     public TodoItem(int id, string title, string description, int categoryId)
     {
@@ -30,7 +30,7 @@ public class TodoItem
         Description = description;
     }
 
-    public void AddProgression(DateTime date, decimal percent)
+    public void AddProgression(DateTime date, int percent)
     {
         if (_progressions.Count > 0 && date <= _progressions.Max(p => p.Date))
             throw new TodoException("Progression date must be after the last one");

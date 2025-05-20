@@ -1,6 +1,6 @@
 ﻿using Beyond.Todo.Application.Commands;
-using Beyond.Todo.Application.Exceptions;
 using Beyond.Todo.Domain.Entities;
+using Beyond.Todo.Domain.Exceptions;
 using Beyond.Todo.Infrastructure.Interfaces;
 using NSubstitute;
 

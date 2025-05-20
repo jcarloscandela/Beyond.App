@@ -57,7 +57,7 @@ public class TodoList : ITodoList
             "removing item");
     }
 
-    public async void RegisterProgression(int id, DateTime dateTime, decimal percent)
+    public async void RegisterProgression(int id, DateTime dateTime, int percent)
     {
         await ExecuteWithErrorHandling(
             () => _mediator.Send(new RegisterProgressionCommand(id, dateTime, percent)),
