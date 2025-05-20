@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Beyond.Todo.Application\Beyond.Todo.Application.csproj" />
+    <ProjectReference Include="..\Beyond.Todo.SignalR\Beyond.Todo.SignalR.csproj" />
   </ItemGroup>
 
 </Project>

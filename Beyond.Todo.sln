@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Beyond.Todo.WebApp.Client",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Beyond.Todo.API", "Beyond.Todo.API\Beyond.Todo.API.csproj", "{BD0E572B-0362-45DF-97BF-A0E90EB8DDBB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Beyond.Todo.SignalR", "Beyond.Todo.SignalR\Beyond.Todo.SignalR.csproj", "{54E598BD-14C5-42C5-93C1-834EE6ECDB02}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,10 @@ Global
 		{BD0E572B-0362-45DF-97BF-A0E90EB8DDBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD0E572B-0362-45DF-97BF-A0E90EB8DDBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BD0E572B-0362-45DF-97BF-A0E90EB8DDBB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54E598BD-14C5-42C5-93C1-834EE6ECDB02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54E598BD-14C5-42C5-93C1-834EE6ECDB02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54E598BD-14C5-42C5-93C1-834EE6ECDB02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54E598BD-14C5-42C5-93C1-834EE6ECDB02}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,4 +1,5 @@
 ﻿using Beyond.Todo.Application.Commands;
+using Beyond.Todo.Application.Services;
 using Beyond.Todo.Domain.Entities;
 using Beyond.Todo.Infrastructure.Interfaces;
 using MediatR;
@@ -8,12 +9,15 @@ namespace Beyond.Todo.Application.Tests;
 
 public class RegisterProgressionHandlerTests
 {
-    private readonly ITodoListRepository _repo = Substitute.For<ITodoListRepository>();
+    private readonly ITodoListRepository _repo;
+    private readonly ITodoNotificationService _notificationService;
     private readonly RegisterProgressionHandler _handler;
 
     public RegisterProgressionHandlerTests()
     {
-        _handler = new RegisterProgressionHandler(_repo);
+        _repo = Substitute.For<ITodoListRepository>();
+        _notificationService = Substitute.For<ITodoNotificationService>();
+        _handler = new RegisterProgressionHandler(_repo, _notificationService);
     }
 
     [Fact]
@@ -23,17 +27,15 @@ public class RegisterProgressionHandlerTests
         var command = new RegisterProgressionCommand(1, new DateTime(2025, 5, 18), 60);
 
         var item = new TodoItem(1, "title", "desc", 1);
-        var repo = Substitute.For<ITodoListRepository>();
-        repo.GetByIdAsync(command.Id).Returns(item);
-
-        var handler = new RegisterProgressionHandler(repo);
+        _repo.GetByIdAsync(command.Id).Returns(item);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
         Assert.Equal(Unit.Value, result);
-        await repo.Received(1).SaveChangesAsync();
+        await _repo.Received(1).SaveChangesAsync();
+        await _notificationService.Received(1).NotifyProgressionRegistered(1, 60);
     }
 
 
@@ -48,5 +50,6 @@ public class RegisterProgressionHandlerTests
         await Assert.ThrowsAsync<KeyNotFoundException>(async () => await _handler.Handle(command, CancellationToken.None));
 
         await _repo.DidNotReceive().SaveChangesAsync();
+        await _notificationService.DidNotReceive().NotifyProgressionRegistered(Arg.Any<int>(), Arg.Any<int>());
     }
 }

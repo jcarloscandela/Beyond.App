@@ -9,6 +9,7 @@ A modular todo list application built with .NET that provides both a console int
 - `Beyond.Todo.Console` - Console-based todo list interface
 - `Beyond.Todo.Domain` - Domain entities and business logic
 - `Beyond.Todo.Infrastructure` - Data persistence and infrastructure concerns
+- `Beyond.Todo.SignalR` - Real-time notification infrastructure
 - `Beyond.Todo.WebApp` - Blazor web application
 
 ## Running the Application
@@ -50,6 +51,7 @@ The API will be available at `https://localhost:7072` and the web application wi
 - Categorize todos
 - Track progression of todo items
 - Web interface with modern UI
+- Real-time notifications for todo updates using SignalR
 - Console interface for command-line operations
 
 ## Project Architecture
@@ -58,3 +60,7 @@ The API will be available at `https://localhost:7072` and the web application wi
 - CQRS pattern for command and query separation
 - Repository pattern for data access
 - Unit tests for application logic
+- Real-time updates using SignalR for:
+  - Task creation and deletion
+  - Task updates
+  - Progression updates
