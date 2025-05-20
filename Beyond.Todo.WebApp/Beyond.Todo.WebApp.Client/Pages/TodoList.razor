@@ -149,7 +149,8 @@
         else
         {
             var errorMessage = await response.Content.ReadAsStringAsync();
-            ToastService.ShowError($"Error: {errorMessage}");
+            var errorDetails = errorMessage.Split(']')[0].Split('[').Last();
+            ToastService.ShowError($"Error: {errorDetails}");
         }
     }
 
@@ -164,8 +165,8 @@
         else
         {
             var errorMessage = await response.Content.ReadAsStringAsync();
-            ToastService.ShowError($"Error: {errorMessage}");
-            //TODO: Show the customer error.
+            var errorDetails = errorMessage.Split(']')[0].Split('[').Last();
+            ToastService.ShowError($"Error: {errorDetails}");
         }
     }
 }

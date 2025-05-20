@@ -17,7 +17,7 @@ public sealed class UpdateItemHandler : IRequestHandler<UpdateItemCommand, Unit>
         var item = await _repo.GetByIdAsync(request.Id) ?? throw new KeyNotFoundException();
 
         if (item.TotalProgress > 50)
-            throw new InvalidOperationException("Cannot update item with more than 50% progression.");
+            throw new InvalidOperationException("[Cannot update item with more than 50% progression.]");
 
         item.UpdateDescription(request.Description);
         await _repo.SaveChangesAsync();

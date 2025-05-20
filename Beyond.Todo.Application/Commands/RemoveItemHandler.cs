@@ -17,7 +17,7 @@ public sealed class RemoveItemHandler : IRequestHandler<RemoveItemCommand, Unit>
         var item = await _repo.GetByIdAsync(request.Id) ?? throw new KeyNotFoundException();
 
         if (item.TotalProgress > 50)
-            throw new InvalidOperationException("Cannot remove item with more than 50% progression.");
+            throw new InvalidOperationException("[Cannot remove item with more than 50% progression.]");
 
         _repo.Remove(item);
         await _repo.SaveChangesAsync();

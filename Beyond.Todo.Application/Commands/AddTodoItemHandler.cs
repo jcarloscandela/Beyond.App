@@ -19,7 +19,7 @@ public sealed class AddTodoItemHandler : IRequestHandler<AddTodoItemCommand, int
     {
         var category = await _categoryRepo.GetCategoryByNameAsync(request.Category);
         if (category == null)
-            throw new ArgumentException($"Category '{request.Category}' not found.");
+            throw new ArgumentException($"[Category '{request.Category}' not found.]");
 
         int id = _todoRepo.GetNextId();
         var item = new TodoItem(id, request.Title, request.Description, category.Id);
