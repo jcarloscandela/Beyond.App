@@ -21,7 +21,7 @@
     @if (showDialog)
     {
         <TodoDialog @bind-IsVisible="showDialog" IsEdit="isEdit" TodoItem="selectedTodo" Categories="categories"
-        OnSave="HandleSaveAsync" OnDelete="HandleDeleteAsync" />
+            OnSave="HandleSaveAsync" OnDelete="HandleDeleteAsync" OnProgressRegistered="LoadTodos" />
     }
 
     @if (todos == null)
@@ -39,14 +39,14 @@
 
         <div class="pagination">
             <FluentButton Type="ButtonType.Button" Appearance="Appearance.Lightweight" Disabled="@(CurrentPage <= 1)"
-            OnClick="@(() => NavigateToPage(CurrentPage - 1))">
+                OnClick="@(() => NavigateToPage(CurrentPage - 1))">
                 Previous
             </FluentButton>
 
             <FluentLabel>Page @CurrentPage</FluentLabel>
 
             <FluentButton Type="ButtonType.Button" Appearance="Appearance.Lightweight" Disabled="@(!HasNextPage)"
-            OnClick="@(() => NavigateToPage(CurrentPage + 1))">
+                OnClick="@(() => NavigateToPage(CurrentPage + 1))">
                 Next
             </FluentButton>
         </div>
@@ -55,18 +55,18 @@
 
 <style>
     .todo-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
-    padding: 20px 0;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+        padding: 20px 0;
     }
 
     .pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 16px;
-    padding: 20px 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 16px;
+        padding: 20px 0;
     }
 </style>
 

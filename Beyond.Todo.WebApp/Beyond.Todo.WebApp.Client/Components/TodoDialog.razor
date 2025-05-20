@@ -112,6 +112,9 @@
     [Parameter]
     public EventCallback<int> OnDelete { get; set; }
 
+    [Parameter]
+    public EventCallback OnProgressRegistered { get; set; }
+
     private CreateTodoDto todoDto = new();
     private bool showProgressForm = false;
     private DateTime? progressDate = DateTime.Now;
@@ -180,6 +183,7 @@
         {
             ToastService.ShowSuccess("Progress registered successfully");
             showProgressForm = false;
+            await OnProgressRegistered.InvokeAsync();
             await IsVisibleChanged.InvokeAsync(false);
         }
         else
