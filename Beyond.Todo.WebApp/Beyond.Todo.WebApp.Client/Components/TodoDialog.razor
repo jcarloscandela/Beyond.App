@@ -3,6 +3,7 @@
 @using Beyond.Todo.WebApp.Client.Models
 @using System.ComponentModel.DataAnnotations
 @inject IToastService ToastService
+@inject HttpClient HttpClient
 
 <EditForm Model="@todoDto" OnValidSubmit="@Submit">
     <DataAnnotationsValidator />
@@ -30,22 +31,47 @@
                 </FluentSelect>
             </div>
 
-            @if (IsEdit && TodoItem?.Progressions.Any() == true)
+            @if (IsEdit)
             {
                 <div style="margin-top: 2rem;">
-                    <FluentLabel Typo="Typography.H6">Progress History</FluentLabel>
-                    <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 0.5rem;">
-                        @foreach (var progression in TodoItem.Progressions.OrderBy(p => p.Date))
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <FluentLabel Typo="Typography.H6">Progress History</FluentLabel>
+                        @if (!TodoItem?.IsCompleted ?? false)
                         {
-                            <div style="display: flex; flex-direction: column; gap: 0.25rem;">
-                                <span style="color: #666;">@progression.Date.ToString("yyyy-MM-dd HH:mm")</span>
-                                <FluentProgress Min="0" Max="100"
-                                                Value="@((int)progression.CumulativePercent)"
-                                                Width="100%"
-                                                Stroke="ProgressStroke.Normal" />
-                            </div>
+                            <FluentButton Appearance="Appearance.Lightweight" OnClick="@(() => showProgressForm = true)">Add
+                                Progress</FluentButton>
                         }
                     </div>
+
+                    @if (showProgressForm)
+                    {
+                        <div style="margin-top: 1rem; padding: 1rem; border: 1px solid #ddd; border-radius: 4px;">
+                            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                                <FluentCalendar TValue="DateTime?" @bind-Value="progressDate" />
+                                <FluentLabel>Progress @progressPercent %</FluentLabel>
+                                <FluentSlider Min="0" Max="100" @bind-Value="progressPercent" Step="1" />
+                                <div style="display: flex; justify-content: flex-end; gap: 0.5rem;">
+                                    <FluentButton OnClick="@(() => showProgressForm = false)">Cancel</FluentButton>
+                                    <FluentButton Appearance="Appearance.Accent" OnClick="@RegisterProgress">Save Progress
+                                    </FluentButton>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    @if (TodoItem?.Progressions.Any() == true)
+                    {
+                        <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 0.5rem;">
+                            @foreach (var progression in TodoItem.Progressions.OrderBy(p => p.Date))
+                            {
+                                <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                                    <span style="color: #666;">@progression.Date.ToString("yyyy-MM-dd HH:mm")</span>
+                                    <FluentProgress Min="0" Max="100" Value="@((int)progression.CumulativePercent)" Width="100%"
+                                        Stroke="ProgressStroke.Normal" />
+                                </div>
+                            }
+                        </div>
+                    }
                 </div>
             }
         </FluentDialogBody>
@@ -56,7 +82,8 @@
                 <FluentButton Type="ButtonType.Submit" Appearance="Appearance.Accent">Save</FluentButton>
                 @if (IsEdit)
                 {
-                    <FluentButton Appearance="Appearance.Outline" Color="Color.Danger" OnClick="@Delete">Delete</FluentButton>
+                    <FluentButton Appearance="Appearance.Outline" Color="Color.Danger" OnClick="@Delete">Delete
+                    </FluentButton>
                 }
             </div>
         </FluentDialogFooter>
@@ -86,6 +113,9 @@
     public EventCallback<int> OnDelete { get; set; }
 
     private CreateTodoDto todoDto = new();
+    private bool showProgressForm = false;
+    private DateTime? progressDate = DateTime.Now;
+    private int progressPercent = 0;
 
     protected override void OnParametersSet()
     {
@@ -133,6 +163,30 @@
         {
             await OnDelete.InvokeAsync(TodoItem.Id);
             await IsVisibleChanged.InvokeAsync(false);
+        }
+    }
+
+    private async Task RegisterProgress()
+    {
+        if (TodoItem == null || !progressDate.HasValue) return;
+
+        var response = await HttpClient.PostAsJsonAsync($"api/todo/{TodoItem.Id}/progression", new
+        {
+            Date = progressDate.Value,
+            Percent = progressPercent
+        });
+
+        if (response.IsSuccessStatusCode)
+        {
+            ToastService.ShowSuccess("Progress registered successfully");
+            showProgressForm = false;
+            await IsVisibleChanged.InvokeAsync(false);
+        }
+        else
+        {
+            var errorMessage = await response.Content.ReadAsStringAsync();
+            var errorDetails = errorMessage.Split(']')[0].Split('[').Last();
+            ToastService.ShowError($"Error: {errorDetails}");
         }
     }
 }

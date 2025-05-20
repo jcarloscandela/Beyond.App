@@ -24,17 +24,17 @@ public class TodoItem
     public void UpdateDescription(string description)
     {
         if (_progressions.Sum(p => p.Percent) > 50)
-            throw new InvalidOperationException("Cannot update an item with more than 50% completed.");
+            throw new InvalidOperationException("[Cannot update an item with more than 50% completed.]");
         Description = description;
     }
 
     public void AddProgression(DateTime date, decimal percent)
     {
         if (_progressions.Count > 0 && date <= _progressions.Max(p => p.Date))
-            throw new ArgumentException("Progression date must be after the last one");
+            throw new ArgumentException("[Progression date must be after the last one]");
 
         if (_progressions.Sum(p => p.Percent) + percent > 100)
-            throw new InvalidOperationException("Total progress cannot exceed 100%");
+            throw new InvalidOperationException("[Total progress cannot exceed 100%]");
 
         _progressions.Add(new Progression(Id, date, percent));
     }
