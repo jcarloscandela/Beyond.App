@@ -26,23 +26,34 @@ dotnet run
 
 This will start the standalone console-based todo list application.
 
-### Option 2: Web Application with API
+### Option 2: Web Application with API (Frontend and Backend)
 
-To run the full web application, you'll need to start both the API and the Blazor web app:
+To run the full web application, you'll need to start both the API (backend) and the Blazor web app (frontend) separately:
 
-1. Start the API:
+1. Start the API (Backend):
 ```bash
 cd Beyond.Todo.API
 dotnet run
 ```
+The API will be available at `https://localhost:7026`
 
-2. In a new terminal, start the web application:
+2. In a new terminal, start the web application (Frontend):
 ```bash
 cd Beyond.Todo.WebApp/Beyond.Todo.WebApp
 dotnet run
 ```
+The web application will be accessible at `https://localhost:5173`
 
-The API will be available at `https://localhost:7072` and the web application will be accessible at `https://localhost:7186`.
+The frontend is configured to communicate with the backend API through the settings in `wwwroot/appsettings.json`. You can modify the backend URL by updating the `ApiSettings.BaseUrl` value in this file. By default, it points to `http://localhost:5175`, but you can change it if your API is running on a different port or host.
+
+Example `appsettings.json` configuration:
+```json
+{
+  "ApiSettings": {
+    "BaseUrl": "http://localhost:5175"
+  }
+}
+```
 
 ## Features
 

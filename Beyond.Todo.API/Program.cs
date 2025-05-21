@@ -16,6 +16,16 @@ namespace Beyond.Todo.API
             builder.Services.AddInfrastructure();
 
             builder.Services.AddControllers();
+
+            // Configure CORS
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", builder =>
+                    builder.AllowAnyOrigin()
+                           .AllowAnyMethod()
+                           .AllowAnyHeader());
+            });
+
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
 
@@ -29,6 +39,8 @@ namespace Beyond.Todo.API
             }
 
             app.UseErrorHandling();
+
+            app.UseCors("AllowAll");
 
             app.UseHttpsRedirection();
 
